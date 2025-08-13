@@ -1,14 +1,12 @@
-v<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Interactive Chiropractic Listing Template - v2.8 (Phase 1)</title>
+  <title>Interactive Chiropractic Listing Template - v2.9 (Phase 1 + Full Groups)</title>
   <style>
     /* ===== Base / Layout ===== */
-    :root {
-      --ink:#2c5282; --ink2:#4a5568; --bg:#f4f7fa; --card:#fff; --line:#d1d9e6; --sel:#b3e6b3; --hover:#b3d4ff; --brand:#4a90e2; --brand2:#357abd;
-    }
+    :root { --ink:#2c5282; --ink2:#4a5568; --bg:#f4f7fa; --card:#fff; --line:#d1d9e6; --sel:#b3e6b3; --hover:#b3d4ff; --brand:#4a90e2; --brand2:#357abd; }
     html,body{height:100%}
     body{margin:20px;font-family:'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:#333}
     h1{color:var(--ink);margin:0 0 14px}
@@ -144,7 +142,7 @@ v<!DOCTYPE html>
         </div>
         <div class="section protocols-section">
           <div class="custom-box"><input placeholder="Add custom protocol…"><button type="button" data-add-custom="protocols">Add</button></div>
-          <h4>Cranial protocols</h4>
+          <h4>Protocols</h4>
           <div id="protocols"></div>
         </div>
         <div class="section sot-section">
@@ -174,159 +172,132 @@ v<!DOCTYPE html>
 
   <script>
     /* ==========================
-       Data (subset preserved from your v2.7)
+       Data (full groups)
        ========================== */
     const listingsData = {
       'Cranial Bones': {
         commonListings: [
-          { text:'LEFT', tooltip:'Left-sided adjustment' },
-          { text:'RIGHT', tooltip:'Right-sided adjustment' },
-          { text:'Bilateral', tooltip:'Both sides adjusted' },
-          { text:'Flexion', tooltip:'Forward tilt adjustment' },
-          { text:'Extension', tooltip:'Backward tilt adjustment' },
-          { text:'Inferior', tooltip:'Downward adjustment' },
-          { text:'Superior', tooltip:'Upward adjustment' }
+          { text:'LEFT' },{ text:'RIGHT' },{ text:'Bilateral' },{ text:'Flexion' },{ text:'Extension' },{ text:'Inferior' },{ text:'Superior' }
         ],
         commonTypes: [
-          { text:'Neuro-Interlink Reflex', tooltip:'Reflex-based correction' },
-          { text:'hold release', tooltip:'Gentle hold and release technique for cranial sutures' },
-          { text:'finger toggle', tooltip:'A gentle hold with torque followed by a HVLA thrust' },
-          { text:'CSF guided release', tooltip:'Cerebrospinal fluid guided release technique' }
+          { text:'Neuro-Interlink Reflex' },{ text:'hold release' },{ text:'finger toggle' },{ text:'CSF guided release' }
         ],
         commonProtocols: [
-          { text:'Howat 8 step Protocol', tooltip:'Cranial detorque correction' },
-          { text:'Carter Nose correction protocol', tooltip:'Nasal structure correction' },
-          { text:'Carter Sphenoid correction', tooltip:'Protocol for sphenoid bone correction' }
+          { text:'Howat 8 step Protocol' },{ text:'Carter Nose correction protocol' },{ text:'Carter Sphenoid correction' }
         ],
-        'Occipital': {
-          positions: [
-            { text:'Occipito-mastoid suture' },
-            { text:'Lamboidal suture' }
-          ]
-        },
-        'Sphenoid': {
-          positions: [
-            { text:'Pterion' },
-            { text:'Spheno-parietal Suture' },
-            { text:'Spheno-frontal Suture' },
-            { text:'Spheno-squamous Suture' },
-            { text:'Spheno-zygomatic suture' }
-          ]
-        },
-        'Maxilla': {
-          positions: [
-            { text:'Inter Maxillary Suture' },
-            { text:'Median Palatine Suture' },
-            { text:'Transverse Palatine suture' },
-            { text:'Incisive suture' },
-            { text:'Zygomatico-maxillary suture' },
-            { text:'Lacrimo-maxillary suture' },
-            { text:'Fronto maxillary suture' },
-            { text:'Naso-maxillary suture' }
-          ]
-        },
-        'Frontal': {
-          positions: [
-            { text:'Sagittal Suture' },
-            { text:'Frontal Suture' },
-            { text:'Frontonasal suture' },
-            { text:'Fronto maxillary suture' },
-            { text:'Fronto-lacrimal suture' },
-            { text:'Fronto-zygomatic suture' },
-            { text:'CCJ cranial detorque protocol' }
-          ]
-        },
-        'Parietal': {
-          positions: [
-            { text:'Sagittal Suture' },
-            { text:'Squamous Suture' },
-            { text:'Spheno-parietal Suture' },
-            { text:'Parietomas-toid Suture' },
-            { text:'Lamboidal suture' }
-          ]
-        },
-        'Temporal': {
-          positions: [
-            { text:'Squamous Suture' },
-            { text:'Temporo-zygomatic suture' },
-            { text:'Spheno-squamous Suture' },
-            { text:'Occipito-mastoid suture' },
-            { text:'Parietomas-toid Suture' },
-            { text:'TMJ' }
-          ]
-        },
-        'Zygomatic': {
-          positions: [
-            { text:'Temporo-zygomatic suture' },
-            { text:'Spheno-zygomatic suture' },
-            { text:'Zygomatico-maxillary suture' },
-            { text:'Fronto-zygomatic suture' }
-          ]
-        },
-        'Ethmoid': {
-          positions: [
-            { text:'Internasal suture' },
-            { text:'Nose protocol' },
-            { text:'Nasal cartilage' }
-          ]
-        },
-        'Vomer': { positions: [ { text:'Median Palatine Suture' }, { text:'Gum release' } ] },
-        'Mandible': { positions: [ { text:'TMJ AI/PS' }, { text:'Mentalis Suture' }, { text:'Gum release' } ] }
+        'Occipital': { positions: [ { text:'Occipito-mastoid suture' },{ text:'Lamboidal suture' } ] },
+        'Sphenoid': { positions: [ { text:'Pterion' },{ text:'Spheno-parietal Suture' },{ text:'Spheno-frontal Suture' },{ text:'Spheno-squamous Suture' },{ text:'Spheno-zygomatic suture' } ] },
+        'Maxilla': { positions: [ { text:'Inter Maxillary Suture' },{ text:'Median Palatine Suture' },{ text:'Transverse Palatine suture' },{ text:'Incisive suture' },{ text:'Zygomatico-maxillary suture' },{ text:'Lacrimo-maxillary suture' },{ text:'Fronto maxillary suture' },{ text:'Naso-maxillary suture' } ] },
+        'Frontal': { positions: [ { text:'Sagittal Suture' },{ text:'Frontal Suture' },{ text:'Frontonasal suture' },{ text:'Fronto maxillary suture' },{ text:'Fronto-lacrimal suture' },{ text:'Fronto-zygomatic suture' },{ text:'CCJ cranial detorque protocol' } ] },
+        'Parietal': { positions: [ { text:'Sagittal Suture' },{ text:'Squamous Suture' },{ text:'Spheno-parietal Suture' },{ text:'Parietomastoid Suture' },{ text:'Lamboidal suture' } ] },
+        'Temporal': { positions: [ { text:'Squamous Suture' },{ text:'Temporo-zygomatic suture' },{ text:'Spheno-squamous Suture' },{ text:'Occipito-mastoid suture' },{ text:'Parietomastoid Suture' },{ text:'TMJ' } ] },
+        'Zygomatic': { positions: [ { text:'Temporo-zygomatic suture' },{ text:'Spheno-zygomatic suture' },{ text:'Zygomatico-maxillary suture' },{ text:'Fronto-zygomatic suture' } ] },
+        'Ethmoid': { positions: [ { text:'Internasal suture' },{ text:'Nose protocol' },{ text:'Nasal cartilage' } ] },
+        'Vomer': { positions: [ { text:'Median Palatine Suture' },{ text:'Gum release' } ] },
+        'Mandible': { positions: [ { text:'TMJ AI/PS' },{ text:'Mentalis Suture' },{ text:'Gum release' } ] }
       },
 
       'Cervical': {
         'Occiput': {
-          listings: [
-            { text:'PS' },{ text:'PS-LS' },{ text:'PS-RS' },{ text:'AS' },{ text:'AS-LS' },{ text:'AS-RS' },
-            { text:'Left posterior Facet' },{ text:'Right posterior Facet' },{ text:'Bilateral posterior Facet' }
-          ],
-          positions: [ { text:'Prone' },{ text:'Supine' },{ text:'Seated' },{ text:'Side posture' },{ text:'Side Posture Toggle Recoil with drop' } ],
-          types: [ { text:'Osseous' },{ text:'De-compression' },{ text:'Toggle Recoil' },{ text:'Finger toggle' },{ text:'Drop' },{ text:'Hold' },{ text:'Dural Breath' } ]
+          listings: [ 'PS','PS-LS','PS-RS','AS','AS-LS','AS-RS','Left posterior Facet','Right posterior Facet','Bilateral posterior Facet' ].map(text=>({text})),
+          positions: [ 'Prone','Supine','Seated','Side posture','Side Posture Toggle Recoil with drop' ].map(text=>({text})),
+          types: [ 'Osseous','De-compression','Toggle Recoil','Finger toggle','Drop','Hold','Dural Breath' ].map(text=>({text}))
         },
         'C1/Atlas': {
-          listings: [
-            { text:'ASR' },{ text:'ASR-P' },{ text:'ASR-A' },{ text:'PIR' },{ text:'PIR-P' },{ text:'PIR-A' },
-            { text:'ASL' },{ text:'ASL-P' },{ text:'ASL-A' },{ text:'PIL' },{ text:'PIL-P' },{ text:'PIL-A' },
-            { text:'Left posterior Facet' },{ text:'Right posterior Facet' },{ text:'Bilateral posterior Facet' },
-            { text:'Left anterior Facet' },{ text:'Right anterior Facet' },{ text:'Bilateral anterior Facet' }
-          ],
-          positions: [ { text:'Prone' },{ text:'Supine' },{ text:'Seated' },{ text:'Side posture' } ],
-          contacts: [ { text:'TVP contact' },{ text:'Posteior arch contact' } ],
-          types: [
-            { text:'Side Posture Toggle Recoil with drop' },{ text:'Osseous' },{ text:'Toggle Recoil' },{ text:'Finger toggle' },{ text:'Hold' },{ text:'Drop' },{ text:'Dural Breath' },{ text:'Coupled Motion' },{ text:'Lateral flexion' },{ text:'Rotation' },{ text:'De-compression' },{ text:'Pull' },{ text:'NUCCA' }
-          ]
+          listings: [ 'ASR','ASR-P','ASR-A','PIR','PIR-P','PIR-A','ASL','ASL-P','ASL-A','PIL','PIL-P','PIL-A','Left posterior Facet','Right posterior Facet','Bilateral posterior Facet','Left anterior Facet','Right anterior Facet','Bilateral anterior Facet' ].map(text=>({text})),
+          positions: [ 'Prone','Supine','Seated','Side posture' ].map(text=>({text})),
+          contacts: [ 'TVP contact','Posteior arch contact' ].map(text=>({text})),
+          types: [ 'Side Posture Toggle Recoil with drop','Osseous','Toggle Recoil','Finger toggle','Hold','Drop','Dural Breath','Coupled Motion','Lateral flexion','Rotation','De-compression','Pull','NUCCA' ].map(text=>({text}))
         },
         'C2-7': {
-          listings: [
-            { text:'Left posterior Facet' },{ text:'Right posterior Facet' },{ text:'Bilateral posterior Facet' },
-            { text:'ASR-la' },{ text:'ASL-la' },{ text:'PR' },{ text:'PRS' },{ text:'PRI-la' },{ text:'PL' },{ text:'PLS' },{ text:'PLI-la' },{ text:'A2N' },{ text:'AL Disc' },{ text:'AR Disc' },{ text:'AL Facet' },{ text:'AR Facet' }
-          ],
-          positions: [ { text:'Prone' },{ text:'Supine' },{ text:'Seated' },{ text:'Side posture' } ],
-          contacts: [ { text:'TVP contact' },{ text:'SP contact' },{ text:'Lamina contact' },{ text:'Articular pillar contact' } ],
-          types: [ { text:'Osseous' },{ text:'Side Posture Toggle Recoil with drop' },{ text:'Drop' },{ text:'Toggle Recoil' },{ text:'Finger toggle' },{ text:'Hold' },{ text:'Dural Breath' },{ text:'Coupled Motion' },{ text:'Lateral flexion' },{ text:'Rotation' },{ text:'De-compression' },{ text:'Pull' } ]
+          listings: [ 'Left posterior Facet','Right posterior Facet','Bilateral posterior Facet','ASR-la','ASL-la','PR','PRS','PRI-la','PL','PLS','PLI-la','A2N','AL Disc','AR Disc','AL Facet','AR Facet' ].map(text=>({text})),
+          positions: [ 'Prone','Supine','Seated','Side posture' ].map(text=>({text})),
+          contacts: [ 'TVP contact','SP contact','Lamina contact','Articular pillar contact' ].map(text=>({text})),
+          types: [ 'Osseous','Side Posture Toggle Recoil with drop','Drop','Toggle Recoil','Finger toggle','Hold','Dural Breath','Coupled Motion','Lateral flexion','Rotation','De-compression','Pull' ].map(text=>({text}))
         }
       },
 
       'Thoracic': {
-        listings: [ { text:'Bilateral Facet' },{ text:'Left facet' },{ text:'Right facet' },{ text:'Left Rib' },{ text:'Right Rib' },{ text:'PR' },{ text:'PRS' },{ text:'PRI-t' },{ text:'PL' },{ text:'PLS' },{ text:'PLI-t' },{ text:'Left side slip' },{ text:'Right side slip' },{ text:'Anterior' },{ text:'AR' },{ text:'ARS' },{ text:'ARI-t' },{ text:'AL' },{ text:'ALI-t' },{ text:'Anterior Rib Cartilage' },{ text:'Left posterior Facet' },{ text:'Right posterior Facet' },{ text:'Bilateral posterior Facet' } ],
-        positions: [ { text:'Prone' },{ text:'Supine' },{ text:'Standing' },{ text:'Seated' } ],
-        contacts: [ { text:'X Bilateral' },{ text:'Double thenar' },{ text:'Unilateral Reinforced' },{ text:'TVP contact' },{ text:'SP contact' },{ text:'Thumb Contact' },{ text:'Double Finger Reinforced' },{ text:'ABC roll' },{ text:'Anterior Thoracic' } ],
-        types: [ { text:'Osseous' },{ text:'Drop' },{ text:'Finger Toggle' },{ text:'Hold' },{ text:'Dural Breath' },{ text:'Inhalation' },{ text:'Expiration' } ]
+        listings: [ 'Bilateral Facet','Left facet','Right facet','Left Rib','Right Rib','PR','PRS','PRI-t','PL','PLS','PLI-t','Left side slip','Right side slip','Anterior','AR','ARS','ARI-t','AL','ALI-t','Anterior Rib Cartilage','Left posterior Facet','Right posterior Facet','Bilateral posterior Facet' ].map(text=>({text})),
+        positions: [ 'Prone','Supine','Standing','Seated' ].map(text=>({text})),
+        contacts: [ 'X Bilateral','Double thenar','Unilateral Reinforced','TVP contact','SP contact','Thumb Contact','Double Finger Reinforced','ABC roll','Anterior Thoracic' ].map(text=>({text})),
+        types: [ 'Osseous','Drop','Finger Toggle','Hold','Dural Breath','Inhalation','Expiration' ].map(text=>({text}))
       },
 
       'Lumbar': {
-        listings: [ { text:'Left posterior Facet' },{ text:'Right posterior Facet' },{ text:'PR' },{ text:'PRS' },{ text:'PRI-m' },{ text:'PL' },{ text:'PLS' },{ text:'PLI-m' },{ text:'Anterior' } ],
-        positions: [ { text:'Side posture' },{ text:'Prone' },{ text:'Supine' },{ text:'Standing' } ],
-        contacts: [ { text:'SP contact' },{ text:'Mammillary contact' } ],
-        types: [ { text:'Osseous' },{ text:'Push move' },{ text:'Pull move' },{ text:'Coupled Motion' },{ text:'ISU' },{ text:'ISD' },{ text:'Drop' },{ text:'Finger Toggle' },{ text:'Hold' },{ text:'Dural Breath' },{ text:'ABC roll' } ]
+        listings: [ 'Left posterior Facet','Right posterior Facet','PR','PRS','PRI-m','PL','PLS','PLI-m','Anterior' ].map(text=>({text})),
+        positions: [ 'Side posture','Prone','Supine','Standing' ].map(text=>({text})),
+        contacts: [ 'SP contact','Mammillary contact' ].map(text=>({text})),
+        types: [ 'Osseous','Push move','Pull move','Coupled Motion','ISU','ISD','Drop','Finger Toggle','Hold','Dural Breath','ABC roll' ].map(text=>({text}))
       },
 
       'Pelvis': {
-        listings: [ { text:'PI' },{ text:'PIIn' },{ text:'PIEx' },{ text:'AS' },{ text:'ASIn' },{ text:'ASEx' },{ text:'Ex' },{ text:'In' },{ text:'Ex/In' },{ text:'In/Ex' } ],
-        positions: [ { text:'Side posture' },{ text:'Prone' },{ text:'Supine' },{ text:'Standing' } ],
-        types: [ { text:'Osseous' },{ text:'Drop' },{ text:'Blocked' },{ text:'Finger toggle' },{ text:'Hold' },{ text:'Dural Breath' },{ text:'Push move' },{ text:'Pull move' },{ text:'Pump' } ]
+        listings: [ 'PI','PIIn','PIEx','AS','ASIn','ASEx','Ex','In','Ex/In','In/Ex' ].map(text=>({text})),
+        positions: [ 'Side posture','Prone','Supine','Standing' ].map(text=>({text})),
+        types: [ 'Osseous','Drop','Blocked','Finger toggle','Hold','Dural Breath','Push move','Pull move','Pump' ].map(text=>({text}))
+      },
+
+      'Sacrum & Coccyx': {
+        'Sacrum': {
+          listings: [ 'Base posterior (SBP)','Apex posterior (SAP)','Left posterior facet','Right posterior facet','Left counternutation','Right counternutation' ].map(text=>({text})),
+          positions: [ 'Side posture','Prone','Supine','Standing' ].map(text=>({text})),
+          contacts: [ 'Sacral base','S2 SP','Left sacral ala','Right sacral ala' ].map(text=>({text})),
+          types: [ 'Osseous','Drop','Blocked','Hold','Pump' ].map(text=>({text})),
+          sot: [ 'Category I','Category II','Category III' ].map(text=>({text}))
+        },
+        'Coccyx': {
+          listings: [ 'Anterior','Posterior','Left lateral','Right lateral','Superior','Inferior' ].map(text=>({text})),
+          positions: [ 'Prone','Side posture','Standing' ].map(text=>({text})),
+          contacts: [ 'Coccygeal apex','Base of coccyx' ].map(text=>({text})),
+          types: [ 'Osseous','Hold','Pump','Finger toggle' ].map(text=>({text}))
+        }
+      },
+
+      'Extremities': {
+        'Shoulder': {
+          listings: [ 'Anterior humeral head','Posterior humeral head','Inferior humeral head','AC separation','SC fixation','GH internal','GH external' ].map(text=>({text})),
+          positions: [ 'Supine','Seated','Standing','Side posture' ].map(text=>({text})),
+          contacts: [ 'Coracoid','Acromion','Humeral head' ].map(text=>({text})),
+          types: [ 'Osseous','Mobilization','Traction','Hold' ].map(text=>({text}))
+        },
+        'Elbow': {
+          listings: [ 'Posterior radial head','Anterior radial head','Medial epicondyle','Lateral epicondyle','Olecranon posterior' ].map(text=>({text})),
+          positions: [ 'Seated','Standing','Supine' ].map(text=>({text})),
+          contacts: [ 'Radial head','Ulna','Humerus' ].map(text=>({text})),
+          types: [ 'Osseous','Mobilization','Traction','Hold' ].map(text=>({text}))
+        },
+        'Wrist/Hand': {
+          listings: [ 'Posterior lunate','Anterior lunate','Carpal fixation','CMC fixation','MCP fixation' ].map(text=>({text})),
+          positions: [ 'Seated','Standing' ].map(text=>({text})),
+          contacts: [ 'Lunate','Scaphoid','Capitate','Metacarpal base' ].map(text=>({text})),
+          types: [ 'Osseous','Mobilization','Traction','Hold' ].map(text=>({text}))
+        },
+        'Hip': {
+          listings: [ 'Anterior femoral head','Posterior femoral head','Superior femoral head','Inferior femoral head' ].map(text=>({text})),
+          positions: [ 'Supine','Prone','Side posture','Standing' ].map(text=>({text})),
+          contacts: [ 'Greater trochanter','Femoral head' ].map(text=>({text})),
+          types: [ 'Osseous','Mobilization','Traction','Hold' ].map(text=>({text}))
+        },
+        'Knee': {
+          listings: [ 'Posterior tibia','Anterior tibia','Medial tibial plateau','Lateral tibial plateau','Patellar tracking' ].map(text=>({text})),
+          positions: [ 'Supine','Seated','Standing','Prone' ].map(text=>({text})),
+          contacts: [ 'Tibial plateau','Fibular head','Patella' ].map(text=>({text})),
+          types: [ 'Osseous','Mobilization','Traction','Hold' ].map(text=>({text}))
+        },
+        'Ankle/Foot': {
+          listings: [ 'Posterior talus','Anterior talus','Navicular fixation','Cuboid fixation','Calcaneal eversion','Calcaneal inversion','Metatarsal fixation' ].map(text=>({text})),
+          positions: [ 'Supine','Seated','Standing','Prone' ].map(text=>({text})),
+          contacts: [ 'Talus','Navicular','Cuboid','Calcaneus','Metatarsal base' ].map(text=>({text})),
+          types: [ 'Osseous','Mobilization','Traction','Hold' ].map(text=>({text}))
+        }
+      },
+
+      'Zones': {
+        listings: [ 'Zone 1 — Glandular','Zone 2 — Eliminative','Zone 3 — Nervous','Zone 4 — Digestive','Zone 5 — Muscular','Zone 6 — Circulatory' ].map(text=>({text})),
+        positions: [ 'Supine','Seated' ].map(text=>({text})),
+        types: [ 'Balance','Stimulate','Sedate','Hold' ].map(text=>({text})),
+        protocols: [ 'Zone sweep','Craniocervical assist' ].map(text=>({text}))
       }
-      // You can extend with Sacrum & coccyx, Extremities, Zones similarly
     };
 
     /* ==========================
@@ -353,8 +324,7 @@ v<!DOCTYPE html>
     const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
 
     function btn(text, cls='selection-button'){
-      const d=document.createElement('div');
-      d.className=cls; d.textContent=text; return d;
+      const d=document.createElement('div'); d.className=cls; d.textContent=text; return d;
     }
 
     function badgeUpdate(){
@@ -372,7 +342,7 @@ v<!DOCTYPE html>
       selectedBone=''; selectedCategory='';
       selectedListings=[]; selectedPositions=[]; selectedContacts=[]; selectedTypes=[]; selectedProtocols=[];
       $$('.selected').forEach(x=>x.classList.remove('selected'));
-      $('#listings').innerHTML=''; $('#positions').innerHTML=''; $('#contacts').innerHTML=''; $('#types').innerHTML=''; $('#protocols').innerHTML=''; $('#sot').innerHTML='';
+      ['listings','positions','contacts','types','protocols','sot'].forEach(id=>{ const h=$('#'+id); if(h) h.innerHTML=''; });
       badgeUpdate();
       const btn=$('#btn-add-row'); if(btn) btn.textContent='Add Row';
     }
@@ -388,13 +358,11 @@ v<!DOCTYPE html>
         const hdr=document.createElement('div'); hdr.className='section-header'; hdr.textContent=sectionName; wrap.appendChild(hdr);
         const inner=document.createElement('div'); inner.style.marginTop='8px'; wrap.appendChild(inner);
 
-        // For Cranial, show sub-bones; for others, show their keys or the section itself
-        const subKeys=Object.keys(section).filter(k=>!['commonListings','commonTypes','commonProtocols'].includes(k));
+        const subKeys=Object.keys(section).filter(k=>!['commonListings','commonTypes','commonProtocols','listings','positions','contacts','types','protocols','sot'].includes(k));
         if(subKeys.length && typeof section[subKeys[0]] === 'object' && !Array.isArray(section[subKeys[0]]) ){
           subKeys.forEach(sub=>{
             const b=btn(sub,'selectable');
             b.addEventListener('click',()=>{
-              // Select bone (single-select)
               $$('#bones .selected').forEach(x=>x.classList.remove('selected')); b.classList.add('selected');
               selectedBone=sub; selectedCategory=sectionName; badgeUpdate();
               renderRightPanelFor(sectionName, sub);
@@ -402,7 +370,7 @@ v<!DOCTYPE html>
             inner.appendChild(b);
           });
         } else {
-          // No sub-keys: treat the section itself as a selectable
+          // Treat the section itself as a selectable (e.g., Zones)
           const b=btn(sectionName,'selectable');
           b.addEventListener('click',()=>{
             $$('#bones .selected').forEach(x=>x.classList.remove('selected')); b.classList.add('selected');
@@ -416,9 +384,8 @@ v<!DOCTYPE html>
     }
 
     function renderRightPanelFor(sectionName, sub){
-      // Reset current picks for right panel groups
       selectedListings=[]; selectedPositions=[]; selectedContacts=[]; selectedTypes=[]; selectedProtocols=[];
-      ['listings','positions','contacts','types','protocols','sot'].forEach(id=>$('#'+id).innerHTML='');
+      ['listings','positions','contacts','types','protocols','sot'].forEach(id=>{ const h=$('#'+id); if(h) h.innerHTML=''; });
 
       const section=listingsData[sectionName];
       const block=sub? section[sub] : section;
@@ -427,9 +394,9 @@ v<!DOCTYPE html>
       const listingsHost=$('#listings');
       const listings=(block && block.listings) || (section.commonListings) || [];
       listings.forEach(it=>{
-        const d=btn(it.text||it);
+        const text = (it.text||it);
+        const d=btn(text);
         d.addEventListener('click',()=>{
-          // single-select for listing
           $$('#listings .selected').forEach(x=>{if(x!==d) x.classList.remove('selected')});
           d.classList.toggle('selected');
           selectedListings=$$('#listings .selected').map(x=>x.textContent.trim());
@@ -443,11 +410,7 @@ v<!DOCTYPE html>
       const positions=(block && block.positions) || [];
       positions.forEach(it=>{
         const d=btn(it.text||it);
-        d.addEventListener('click',()=>{
-          d.classList.toggle('selected');
-          selectedPositions=$$('#positions .selected').map(x=>x.textContent.trim());
-          badgeUpdate();
-        });
+        d.addEventListener('click',()=>{ d.classList.toggle('selected'); selectedPositions=$$('#positions .selected').map(x=>x.textContent.trim()); badgeUpdate(); });
         positionsHost.appendChild(d);
       });
 
@@ -456,11 +419,7 @@ v<!DOCTYPE html>
       const contacts=(block && block.contacts) || [];
       contacts.forEach(it=>{
         const d=btn(it.text||it);
-        d.addEventListener('click',()=>{
-          d.classList.toggle('selected');
-          selectedContacts=$$('#contacts .selected').map(x=>x.textContent.trim());
-          badgeUpdate();
-        });
+        d.addEventListener('click',()=>{ d.classList.toggle('selected'); selectedContacts=$$('#contacts .selected').map(x=>x.textContent.trim()); badgeUpdate(); });
         contactsHost.appendChild(d);
       });
 
@@ -469,11 +428,7 @@ v<!DOCTYPE html>
       const types=(block && block.types) || (section.commonTypes) || [];
       types.forEach(it=>{
         const d=btn(it.text||it);
-        d.addEventListener('click',()=>{
-          d.classList.toggle('selected');
-          selectedTypes=$$('#types .selected').map(x=>x.textContent.trim());
-          badgeUpdate();
-        });
+        d.addEventListener('click',()=>{ d.classList.toggle('selected'); selectedTypes=$$('#types .selected').map(x=>x.textContent.trim()); badgeUpdate(); });
         typesHost.appendChild(d);
       });
 
@@ -482,15 +437,11 @@ v<!DOCTYPE html>
       const protocols=(block && block.protocols) || (section.commonProtocols) || [];
       protocols.forEach(it=>{
         const d=btn(it.text||it);
-        d.addEventListener('click',()=>{
-          d.classList.toggle('selected');
-          selectedProtocols=$$('#protocols .selected').map(x=>x.textContent.trim());
-          badgeUpdate();
-        });
+        d.addEventListener('click',()=>{ d.classList.toggle('selected'); selectedProtocols=$$('#protocols .selected').map(x=>x.textContent.trim()); badgeUpdate(); });
         protocolsHost.appendChild(d);
       });
 
-      // SOT (if present)
+      // SOT (optional)
       const sotHost=$('#sot');
       const sot=(block && block.sot) || [];
       sot.forEach(it=>{
@@ -543,16 +494,20 @@ v<!DOCTYPE html>
     }
 
     function delRow(idx){ const [removed]=savedRows.splice(idx,1); pushHistory({type:'delete',index:idx,row:removed}); persist(); renderSaved(); }
-    function loadRow(idx){ const row=savedRows[idx]; if(!row) return; clearPending();
-      // select category & bone
-      // Find which section contains this bone
-      let secName=selectedCategory; // default
+
+    function loadRow(idx){
+      const row=savedRows[idx]; if(!row) return; clearPending();
+      // Determine section for this bone
+      let secName = null;
       Object.keys(listingsData).forEach(name=>{ if(listingsData[name][row.bone]) secName=name; });
+      if(!secName && listingsData[row.bone]) secName=row.bone; // handle sections like "Zones" with no sub-bones
+      if(!secName) secName = selectedCategory || Object.keys(listingsData)[0];
+
       selectedCategory=secName; selectedBone=row.bone;
-      // visually select in bones panel
-      $$('#bones .selectable').forEach(el=>{ if(el.textContent.trim()===row.bone) el.classList.add('selected'); else el.classList.remove('selected'); });
-      renderRightPanelFor(secName,row.bone);
-      // apply right panel selections
+      // visually select
+      $$('#bones .selectable').forEach(el=>{ if(el.textContent.trim()===row.bone || el.textContent.trim()===secName && secName===row.bone) el.classList.add('selected'); else el.classList.remove('selected'); });
+      renderRightPanelFor(secName, listingsData[secName][row.bone] ? row.bone : null);
+
       function selectIn(hostId, values){ values.forEach(v=>{ $(`#${hostId}`)?.querySelectorAll('.selection-button')?.forEach(el=>{ if(el.textContent.trim()===v) el.classList.add('selected'); }); }); }
       selectedListings=[row.listing]; selectIn('listings',[row.listing]);
       selectedPositions=row.positions||[]; selectIn('positions',selectedPositions);
@@ -568,11 +523,12 @@ v<!DOCTYPE html>
       case 'delete': savedRows.splice(a.index,0,a.row); redoStack.push(a); break;
       case 'import': savedRows=a.prev; redoStack.push(a); break;
     } persist(); renderSaved(); }
+
     function redo(){ const a=redoStack.pop(); if(!a) return; switch(a.type){
       case 'add': savedRows.splice(a.index,0,a.row); break;
       case 'edit': savedRows[a.index]=a.next; break;
       case 'delete': savedRows.splice(a.index,1); break;
-      case 'import': /* re-apply? no-op here */ break;
+      case 'import': /* no-op */ break;
     } undoStack.push(a); persist(); renderSaved(); }
 
     function persist(){ try{ localStorage.setItem('chiroNotes_phase1', JSON.stringify({savedRows})); }catch(e){} }
@@ -593,7 +549,6 @@ v<!DOCTYPE html>
           const host=$('#'+(key==='listings'?'listings':key)); const d=btn(txt);
           host.prepend(d); // add at top
           if(key==='listings'){
-            // listings is single-select
             $$('#listings .selected').forEach(x=>x.classList.remove('selected'));
             d.classList.add('selected'); selectedListings=[txt];
           } else if(key==='positions'){ d.addEventListener('click',()=>{ d.classList.toggle('selected'); selectedPositions=$$('#positions .selected').map(x=>x.textContent.trim()); badgeUpdate(); }); d.classList.add('selected'); selectedPositions.unshift(txt);
@@ -606,7 +561,7 @@ v<!DOCTYPE html>
     }
 
     /* ==========================
-       SOAP helpers (optional focus)
+       SOAP helpers
        ========================== */
     let activeSoap='S';
     function wireSoap(){
@@ -637,8 +592,9 @@ v<!DOCTYPE html>
 
     // Init
     renderBones(); restore(); renderSaved(); wireCustomAdders(); wireSoap(); badgeUpdate();
-    // Autosave safety net
     setInterval(persist, 5000);
   </script>
 </body>
 </html>
+
+
