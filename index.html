@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Interactive Chiropractic Listing Template - v2.8 (Phase 1, Original Data)</title>
+  <title>Interactive Chiropractic Listing Template - v2.10 (Phase 1+2, Objective column)</title>
   <style>
-    :root { --ink:#2c5282; --ink2:#4a5568; --bg:#f4f7fa; --card:#fff; --line:#d1d9e6; --sel:#b3e6b3; --hover:#b3d4ff; --brand:#4a90e2; --brand2:#357abd; }
+    :root { --ink:#2c5282; --ink2:#4a5568; --bg:#f4f7fa; --card:#fff; --line:#d1d9e6; --sel:#b3e6b3; --hover:#b3d4ff; --brand:#4a90e2; --brand2:#357abd; --focus:#7c3aed; }
     html,body{height:100%}
     body{margin:20px;font-family:'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:#333}
     h1{color:var(--ink);margin:0 0 14px}
@@ -13,48 +13,51 @@
     h4{color:var(--ink2);margin:0 0 8px}
 
     .top-buttons{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-    .button{padding:8px 14px;background:var(--brand);color:#fff;border:0;border-radius:6px;cursor:pointer;font-size:14px}
+    .button{padding:8px 14px;background:var(--brand);color:#fff;border:0;border-radius:8px;cursor:pointer;font-size:14px;box-shadow:0 1px 2px rgba(0,0,0,.08)}
     .button:hover{background:var(--brand2)}
 
-    .column-container{display:flex;gap:20px}
-    .col{flex:1 1 0;border:1px solid var(--line);background:var(--card);border-radius:10px;box-shadow:0 2px 4px rgba(0,0,0,.08);padding:14px;min-height:200px}
-    .col-bones{flex:1 1 25%}
-    .col-listings{flex:1 1 35%}
-    .col-soap{flex:1 1 40%}
+    .column-container{display:grid;grid-template-columns:1fr 1.2fr 0.9fr 1fr;gap:20px;align-items:start}
+    .col{border:1px solid var(--line);background:var(--card);border-radius:12px;box-shadow:0 2px 4px rgba(0,0,0,.08);padding:14px;min-height:200px}
+    .col-bones{grid-column:1}
+    .col-listings{grid-column:2}
+    .col-objective{grid-column:3}
+    .col-soap{grid-column:4}
 
     .section{margin-bottom:16px}
-    .section-header{cursor:pointer;font-weight:700;color:var(--ink);padding:10px 12px;background:#c7eaff;border:1px solid #b3c7f7;border-radius:8px;transition:.25s}
+    .section-header{cursor:pointer;font-weight:700;color:var(--ink);padding:10px 12px;background:#c7eaff;border:1px solid #b3c7f7;border-radius:10px;transition:.25s}
     .section-header:hover{background:#a8d1ff}
 
-    .selectable,.selection-button{cursor:pointer;background:#e8f0fe;padding:8px;margin:6px 0;border:1px solid #b3c7f7;border-radius:6px;transition:.2s;position:relative}
+    .selectable,.selection-button{cursor:pointer;background:#e8f0fe;padding:8px;margin:6px 0;border:1px solid #b3c7f7;border-radius:8px;transition:.15s;position:relative;outline:none}
     .selectable:hover:not(.selected),.selection-button:hover:not(.selected){background:var(--hover)}
+    .selection-button:focus{box-shadow:0 0 0 3px rgba(124,58,237,.35);border-color:var(--focus)}
     .selected{background:var(--sel)!important;border-color:#4caf50!important}
+    .selected::after{content:"✓";position:absolute;right:8px;top:50%;transform:translateY(-50%);font-weight:700;color:#256029}
     .group{margin-bottom:10px}
 
-    .rb-wrap{margin:16px 0;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+    .rb-wrap{margin:16px 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}
     .rb-bar{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap;align-items:center}
     .rb-left{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     .rb-badge{display:inline-flex;gap:6px;align-items:center;background:#e8f0fe;border:1px solid #b3c7f7;border-radius:999px;padding:6px 10px;font-size:13px;color:var(--ink)}
     .rb-actions{display:flex;gap:8px;flex-wrap:wrap}
-    .btn-sm{padding:6px 10px;font-size:13px;border-radius:6px;border:1px solid #cbd5e0;background:#f7fafc;cursor:pointer}
+    .btn-sm{padding:6px 10px;font-size:13px;border-radius:8px;border:1px solid #cbd5e0;background:#f7fafc;cursor:pointer}
     .btn-sm.primary{background:var(--brand);border-color:var(--brand2);color:#fff}
     .btn-sm:disabled{opacity:.5;cursor:not-allowed}
 
-    .saved-wrap{margin:16px 0;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+    .saved-wrap{margin:16px 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}
     .saved-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
     .saved-list{list-style:none;margin:0;padding:0}
-    .saved-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:8px 10px;margin-bottom:6px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px}
-    .icon-btn{border:1px solid #cbd5e0;background:#fff;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px}
+    .saved-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:8px 10px;margin-bottom:6px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px}
+    .icon-btn{border:1px solid #cbd5e0;background:#fff;border-radius:8px;padding:4px 8px;cursor:pointer;font-size:12px}
     .icon-btn:hover{background:#edf2f7}
     .saved-text{font-size:14px;color:#2d3748}
 
     .custom-box{display:flex;gap:6px;margin-bottom:8px}
-    .custom-box input{flex:1;padding:6px 8px;border:1px solid var(--line);border-radius:6px;font-size:13px}
-    .custom-box button{padding:6px 10px;font-size:13px;border-radius:6px;border:1px solid #cbd5e0;background:#f7fafc;cursor:pointer}
+    .custom-box input{flex:1;padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:13px}
+    .custom-box button{padding:6px 10px;font-size:13px;border-radius:8px;border:1px solid #cbd5e0;background:#f7fafc;cursor:pointer}
 
-    .soap-card{border:1px dashed var(--line);border-radius:10px;padding:10px}
+    .soap-card{border:1px dashed var(--line);border-radius:12px;padding:10px}
     .soap-header{cursor:pointer;color:var(--ink);font-weight:700;margin:10px 0 6px}
-    .soap-area{width:100%;height:120px;resize:vertical;border:1px solid var(--line);border-radius:6px;padding:8px;font-size:14px;box-sizing:border-box}
+    .soap-area{width:100%;height:120px;resize:vertical;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:14px;box-sizing:border-box}
     .active-section{outline:2px solid #4caf50}
 
     .desktop-only-overlay{display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(0,0,0,.8);color:#fff;z-index:5000;text-align:center;padding:24px}
@@ -79,7 +82,7 @@
 
     <h1>Interactive Chiropractic Listing Template</h1>
 
-    <div class="rb-wrap">
+    <div class="rb-wrap" aria-live="polite">
       <div class="rb-bar">
         <div class="rb-left" id="rb-badges">
           <span class="rb-badge"><strong>Bone:</strong>&nbsp;<span data-rb="bone">—</span></span>
@@ -104,35 +107,43 @@
     <div class="column-container">
       <div class="col col-bones">
         <h3>Select Area / Category</h3>
-        <div id="bones"></div>
+        <div id="bones" role="listbox" aria-label="Areas and Bones"></div>
       </div>
 
       <div class="col col-listings">
         <h3>Listings & Adjustments</h3>
         <div class="section listings-section">
-          <div class="custom-box"><input placeholder="Add custom listing…"><button type="button" data-add-custom="listings">Add</button></div>
+          <div class="custom-box"><input placeholder="Add custom listing…" aria-label="Add custom listing"><button type="button" data-add-custom="listings">Add</button></div>
           <h4>Listings</h4>
-          <div id="listings"></div>
+          <div id="listings" role="listbox" aria-label="Listings" aria-multiselectable="false"></div>
         </div>
         <div class="section positions-section">
-          <div class="custom-box"><input placeholder="Add custom position…"><button type="button" data-add-custom="positions">Add</button></div>
+          <div class="custom-box"><input placeholder="Add custom position…" aria-label="Add custom position"><button type="button" data-add-custom="positions">Add</button></div>
           <h4>Patient position</h4>
-          <div id="positions"></div>
+          <div id="positions" role="listbox" aria-label="Positions" aria-multiselectable="true"></div>
         </div>
         <div class="section contacts-section">
-          <div class="custom-box"><input placeholder="Add custom contact…"><button type="button" data-add-custom="contacts">Add</button></div>
+          <div class="custom-box"><input placeholder="Add custom contact…" aria-label="Add custom contact"><button type="button" data-add-custom="contacts">Add</button></div>
           <h4>Contact</h4>
-          <div id="contacts"></div>
+          <div id="contacts" role="listbox" aria-label="Contacts" aria-multiselectable="true"></div>
         </div>
         <div class="section types-section">
-          <div class="custom-box"><input placeholder="Add custom type…"><button type="button" data-add-custom="types">Add</button></div>
+          <div class="custom-box"><input placeholder="Add custom type…" aria-label="Add custom type"><button type="button" data-add-custom="types">Add</button></div>
           <h4>Type of adjustment</h4>
-          <div id="types"></div>
+          <div id="types" role="listbox" aria-label="Types" aria-multiselectable="true"></div>
         </div>
         <div class="section protocols-section">
-          <div class="custom-box"><input placeholder="Add custom protocol…"><button type="button" data-add-custom="protocols">Add</button></div>
+          <div class="custom-box"><input placeholder="Add custom protocol…" aria-label="Add custom protocol"><button type="button" data-add-custom="protocols">Add</button></div>
           <h4>Protocols</h4>
-          <div id="protocols"></div>
+          <div id="protocols" role="listbox" aria-label="Protocols" aria-multiselectable="true"></div>
+        </div>
+      </div>
+
+      <div class="col col-objective">
+        <h3>Objective</h3>
+        <div class="soap-card">
+          <div class="soap-header" data-soap="O">OBJECTIVE FINDINGS</div>
+          <textarea id="soap-O" class="soap-area" placeholder="Objective findings…" aria-label="Objective findings"></textarea>
         </div>
       </div>
 
@@ -140,147 +151,104 @@
         <h3>SOAP Notes</h3>
         <div class="soap-card">
           <div class="soap-header" data-soap="S">SUBJECTIVE</div>
-          <textarea id="soap-S" class="soap-area" placeholder="Subjective notes…"></textarea>
-          <div class="soap-header" data-soap="O">OBJECTIVE FINDINGS</div>
-          <textarea id="soap-O" class="soap-area" placeholder="Objective findings…"></textarea>
+          <textarea id="soap-S" class="soap-area" placeholder="Subjective notes…" aria-label="Subjective notes"></textarea>
           <div class="soap-header" data-soap="A">ACTION</div>
-          <textarea id="soap-A" class="soap-area" placeholder="Actions performed…"></textarea>
+          <textarea id="soap-A" class="soap-area" placeholder="Actions performed…" aria-label="Actions performed"></textarea>
           <div class="soap-header" data-soap="P">PLAN</div>
-          <textarea id="soap-P" class="soap-area" placeholder="Plan…"></textarea>
+          <textarea id="soap-P" class="soap-area" placeholder="Plan…" aria-label="Plan"></textarea>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    /* ========= Original data (unchanged) ========= */
+    /* ========= Original data (unchanged except typo fixes) ========= */
     const listingsData = {
-            'Cranial Bones': {
-                commonListings: [
-                    { text: 'LEFT', tooltip: 'Left-sided adjustment' },
-                    { text: 'RIGHT', tooltip: 'Right-sided adjustment' },
-                    { text: 'Bilateral', tooltip: 'Both sides adjusted' },
-                    { text: 'Flexion', tooltip: 'Forward tilt adjustment' },
-                    { text: 'Extension', tooltip: 'Backward tilt adjustment' },
-                    { text: 'Inferior', tooltip: 'Downward adjustment' },
-                    { text: 'Superior', tooltip: 'Upward adjustment' }
-                ],
-                commonTypes: [
-                    { text: 'Neuro-Interlink Reflex', tooltip: 'Reflex-based correction' },
-                    { text: 'hold release', tooltip: 'Gentle hold and release technique for cranial sutures' },
-                    { text: 'finger toggle', tooltip: 'A gentle hold with torque followed by a HVLA thrust' },
-                    { text: 'CSF guided release', tooltip: 'Cerebrospinal fluid guided release technique' }
-                ],
-                commonProtocols: [
-                    { text: 'Howat 8 step Protocol', tooltip: 'Cranial detorque correction' },
-                    { text: 'Carter Nose correction protocol', tooltip: 'Nasal structure correction' },
-                    { text: 'Carter Sphenoid correction', tooltip: 'Protocol for sphenoid bone correction' }
-                ],
-                'Occipital': {
-                    positions: [
-                        { text: 'Occipito-mastoid suture', tooltip: 'Contact at occipito-mastoid junction' },
-                        { text: 'Lamboidal suture', tooltip: 'Contact at lamboidal suture' }
-                    ]
-                },
-                'Sphenoid': { positions: [ { text: 'Pterion' }, { text: 'Spheno-parietal Suture' }, { text: 'Spheno-frontal Suture' }, { text: 'Spheno-squamous Suture' }, { text: 'Spheno-zygomatic suture' } ] },
-                'Maxilla': { positions: [ { text: 'Inter Maxillary Suture' }, { text: 'Median Palatine Suture' }, { text: 'Transverse Palatine suture' }, { text: 'Incisive suture' }, { text: 'Zygomatico-maxillary suture' }, { text: 'Lacrimo-maxillary suture' }, { text: 'Fronto maxillary suture' }, { text: 'Naso-maxillary suture' } ] },
-                'Frontal': { positions: [ { text: 'Sagittal Suture' }, { text: 'Frontal Suture' }, { text: 'Frontonasal suture' }, { text: 'Fronto maxillary suture' }, { text: 'Fronto-lacrimal suture' }, { text: 'Fronto-zygomatic suture' }, { text: 'CCJ cranial detorque protocol' } ] },
-                'Parietal': { positions: [ { text: 'Sagittal Suture' }, { text: 'Squamous Suture' }, { text: 'Spheno-parietal Suture' }, { text: 'Parietomas-toid Suture' }, { text: 'Lamboidal suture' } ] },
-                'Temporal': { positions: [ { text: 'Squamous Suture' }, { text: 'Temporo-zygomatic suture' }, { text: 'Spheno-squamous Suture' }, { text: 'Occipito-mastoid suture' }, { text: 'Parietomas-toid Suture' }, { text: 'TMJ' } ] },
-                'Zygomatic': { positions: [ { text: 'Temporo-zygomatic suture' }, { text: 'Spheno-zygomatic suture' }, { text: 'Zygomatico-maxillary suture' }, { text: 'Fronto-zygomatic suture' } ] },
-                'Ethmoid': { positions: [ { text: 'Internasal suture' }, { text: 'Nose protocol' }, { text: 'Nasal cartilage' } ] },
-                'Vomer': { positions: [ { text: 'Median Palatine Suture' }, { text: 'Gum release' } ] },
-                'Mandible': { positions: [ { text: 'TMJ AI/PS' }, { text: 'Mentalis Suture' }, { text: 'Gum release' } ] }
-            },
-            'Cervical': {
-                'Occiput': {
-                    listings: [ { text: 'PS' }, { text: 'PS-LS' }, { text: 'PS-RS' }, { text: 'AS' }, { text: 'AS-LS' }, { text: 'AS-RS' }, { text: 'Left posterior Facet' }, { text: 'Right posterior Facet' }, { text: 'Bilateral posterior Facet' } ],
-                    positions: [ { text: 'Prone' }, { text: 'Supine' }, { text: 'Seated' }, { text: 'Side posture' }, { text: 'Side Posture Toggle Recoil with drop' } ],
-                    types: [ { text: 'Osseous' }, { text: 'De-compression' }, { text: 'Toggle Recoil' }, { text: 'Finger toggle' }, { text: 'Drop' }, { text: 'Hold' }, { text: 'Dural Breath' } ]
-                },
-                'C1/Atlas': {
-                    listings: [ { text: 'ASR' }, { text: 'ASR-P' }, { text: 'ASR-A' }, { text: 'PIR' }, { text: 'PIR-P' }, { text: 'PIR-A' }, { text: 'ASL' }, { text: 'ASL-P' }, { text: 'ASL-A' }, { text: 'PIL' }, { text: 'PIL-P' }, { text: 'PIL-A' }, { text: 'Left posterior Facet' }, { text: 'Right posterior Facet' }, { text: 'Bilateral posterior Facet' }, { text: 'Left anterior Facet' }, { text: 'Right anterior Facet' }, { text: 'Bilateral anterior Facet' } ],
-                    positions: [ { text: 'Prone' }, { text: 'Supine' }, { text: 'Seated' }, { text: 'Side posture' } ],
-                    contacts: [ { text: 'TVP contact' }, { text: 'Posteior arch contact' } ],
-                    types: [ { text: 'Side Posture Toggle Recoil with drop' }, { text: 'Osseous' }, { text: 'Toggle Recoil' }, { text: 'Finger toggle' }, { text: 'Hold' }, { text: 'Drop' }, { text: 'Dural Breath' }, { text: 'Coupled Motion' }, { text: 'Lateral flexion' }, { text: 'Rotation' }, { text: 'De-compression' }, { text: 'Pull' }, { text: 'NUCCA' } ]
-                },
-                'C2-7': {
-                    listings: [ { text: 'Left posterior Facet' }, { text: 'Right posterior Facet' }, { text: 'Bilateral posterior Facet' }, { text: 'ASR-la' }, { text: 'ASL-la' }, { text: 'PR' }, { text: 'PRS' }, { text: 'PRI-la' }, { text: 'PL' }, { text: 'PLS' }, { text: 'PLI-la' }, { text: 'A2N' }, { text: 'AL Disc' }, { text: 'AR Disc' }, { text: 'AL Facet' }, { text: 'AR Facet' } ],
-                    positions: [ { text: 'Prone' }, { text: 'Supine' }, { text: 'Seated' }, { text: 'Side posture' } ],
-                    contacts: [ { text: 'TVP contact' }, { text: 'SP contact' }, { text: 'Lamina contact' }, { text: 'Articular pillar contact' } ],
-                    types: [ { text: 'Osseous' }, { text: 'Side Posture Toggle Recoil with drop' }, { text: 'Drop' }, { text: 'Toggle Recoil' }, { text: 'Finger toggle' }, { text: 'Hold' }, { text: 'Dural Breath' }, { text: 'Coupled Motion' }, { text: 'Lateral flexion' }, { text: 'Rotation' }, { text: 'De-compression' }, { text: 'Pull' } ]
-                }
-            },
-            'Thoracic': { listings: [ { text: 'Bilateral Facet' }, { text: 'Left facet' }, { text: 'Right facet' }, { text: 'Left Rib' }, { text: 'Right Rib' }, { text: 'PR' }, { text: 'PRS' }, { text: 'PRI-t' }, { text: 'PL' }, { text: 'PLS' }, { text: 'PLI-t' }, { text: 'Left side slip' }, { text: 'Right side slip' }, { text: 'Anterior' }, { text: 'AR' }, { text: 'ARS' }, { text: 'ARI-t' }, { text: 'AL' }, { text: 'ALI-t' }, { text: 'Anterior Rib Cartilage' }, { text: 'Left posterior Facet' }, { text: 'Right posterior Facet' }, { text: 'Bilateral posterior Facet' } ], positions: [ { text: 'Prone' }, { text: 'Supine' }, { text: 'Standing' }, { text: 'Seated' } ], contacts: [ { text: 'X Bilateral' }, { text: 'Double thenar' }, { text: 'Unilateral Reinforced' }, { text: 'TVP contact' }, { text: 'SP contact' }, { text: 'Thumb Contact' }, { text: 'Double Finger Reinforced' }, { text: 'ABC roll' }, { text: 'Anterior Thoracic' } ], types: [ { text: 'Osseous' }, { text: 'Drop' }, { text: 'Finger Toggle' }, { text: 'Hold' }, { text: 'Dural Breath' }, { text: 'Inhalation' }, { text: 'Expiration' } ] },
-            'Lumbar': { listings: [ { text: 'Left posterior Facet' }, { text: 'Right posterior Facet' }, { text: 'PR' }, { text: 'PRS' }, { text: 'PRI-m' }, { text: 'PL' }, { text: 'PLS' }, { text: 'PLI-m' }, { text: 'Anterior' } ], positions: [ { text: 'Side posture' }, { text: 'Prone' }, { text: 'Supine' }, { text: 'Standing' } ], contacts: [ { text: 'SP contact' }, { text: 'Mammillary contact' } ], types: [ { text: 'Osseous' }, { text: 'Push move' }, { text: 'Pull move' }, { text: 'Coupled Motion' }, { text: 'ISU' }, { text: 'ISD' }, { text: 'Drop' }, { text: 'Finger Toggle' }, { text: 'Hold' }, { text: 'Dural Breath' }, { text: 'ABC roll' } ] },
-            'Pelvis': { listings: [ { text: 'PI' }, { text: 'PIIn' }, { text: 'PIEx' }, { text: 'AS' }, { text: 'ASIn' }, { text: 'ASEx' }, { text: 'Ex' }, { text: 'In' }, { text: 'Ex/In' }, { text: 'In/Ex' } ], positions: [ { text: 'Side posture' }, { text: 'Prone' }, { text: 'Supine' }, { text: 'Standing' } ], types: [ { text: 'Osseous' }, { text: 'Drop' }, { text: 'Blocked' }, { text: 'Finger toggle' }, { text: 'Hold' }, { text: 'Dural Breath' }, { text: 'Push move' }, { text: 'Pull move' }, { text: 'Pump' } ] },
-            'Sacrum & coccyx': {
-                listings: [
-                    { text: 'P', tooltip: 'Posterior' },
-                    { text: 'P-L', tooltip: 'Posterior Left' },
-                    { text: 'P-R', tooltip: 'Posterior Right' },
-                    { text: 'P-L inf', tooltip: 'Posterior Left Inferior' },
-                    { text: 'P-R inf', tooltip: 'Posterior Right Inferior' },
-                    { text: 'L-inf', tooltip: 'Left Inferior' },
-                    { text: 'R-inf', tooltip: 'Right Inferior' },
-                    { text: 'A-L', tooltip: 'Anterior Left' },
-                    { text: 'A-R', tooltip: 'Anterior Right' },
-                    { text: 'A-L-inf', tooltip: 'Anterior Left Inferior' },
-                    { text: 'A-R-inf', tooltip: 'Anterior Right Inferior' }
-                ],
-                positions: [
-                    { text: 'Side posture', tooltip: 'Side-lying position' },
-                    { text: 'Prone', tooltip: 'Face-down position' },
-                    { text: 'Supine', tooltip: 'Face-up position' }
-                ],
-                types: [
-                    { text: 'Osseous', tooltip: 'Cavitation adjustment' },
-                    { text: 'ISU', tooltip: 'Involved Side Up' },
-                    { text: 'ISD', tooltip: 'Involved Side Down' },
-                    { text: 'Push move', tooltip: 'Pushing adjustment' },
-                    { text: 'Pull move', tooltip: 'Pulling adjustment' },
-                    { text: 'Drop', tooltip: 'Drop table technique' },
-                    { text: 'Finger Toggle', tooltip: 'Finger-based toggle adjustment' },
-                    { text: 'Hold', tooltip: 'Sustained hold adjustment' },
-                    { text: 'Dural Breath', tooltip: 'Dural tension adjustment' },
-                    { text: 'Logan Basic L', tooltip: 'Logan Basic Left technique' },
-                    { text: 'Logan Basic R', tooltip: 'Logan Basic Right technique' }
-                ]
-            },
-            'Extremities': {
-                listings: [
-                    { text: 'LEFT', tooltip: 'Left side adjustment' },
-                    { text: 'RIGHT', tooltip: 'Right side adjustment' },
-                    { text: 'BILATERAL', tooltip: 'Both sides adjustment' },
-                    { text: 'TMJ', tooltip: 'Temporomandibular joint' },
-                    { text: 'Shoulder', tooltip: 'Shoulder joint' },
-                    { text: 'Elbow', tooltip: 'Elbow joint' },
-                    { text: 'Wrist', tooltip: 'Wrist joint' },
-                    { text: 'Hand', tooltip: 'Hand joints' },
-                    { text: 'Hip', tooltip: 'Hip joint' },
-                    { text: 'Knee', tooltip: 'Knee joint' },
-                    { text: 'Ankle', tooltip: 'Ankle joint' },
-                    { text: 'Foot', tooltip: 'Foot joints' }
-                ],
-                positions: [
-                    { text: 'Supine', tooltip: 'Face-up position' },
-                    { text: 'Seated', tooltip: 'Sitting position' },
-                    { text: 'Standing', tooltip: 'Standing position' },
-                    { text: 'Prone', tooltip: 'Face-down position' },
-                    { text: 'Side posture', tooltip: 'Side-lying position' }
-                ],
-                contacts: [
-                    { text: 'Medial', tooltip: 'Medial contact' },
-                    { text: 'Intermediate', tooltip: 'Intermediate contact' },
-                    { text: 'Lateral', tooltip: 'Lateral contact' }
-                ],
-                types: [
-                    { text: 'Osseous', tooltip: 'Cavitation adjustment' },
-                    { text: 'Drop', tooltip: 'Drop table technique' },
-                    { text: 'Stimulation', tooltip: 'Stimulation of joint' }
-                ]
-            }
-        };
+      'Cranial Bones': {
+        commonListings: [
+          { text: 'LEFT', tooltip: 'Left-sided adjustment' },
+          { text: 'RIGHT', tooltip: 'Right-sided adjustment' },
+          { text: 'Bilateral', tooltip: 'Both sides adjusted' },
+          { text: 'Flexion', tooltip: 'Forward tilt adjustment' },
+          { text: 'Extension', tooltip: 'Backward tilt adjustment' },
+          { text: 'Inferior', tooltip: 'Downward adjustment' },
+          { text: 'Superior', tooltip: 'Upward adjustment' }
+        ],
+        commonTypes: [
+          { text: 'Neuro-Interlink Reflex', tooltip: 'Reflex-based correction' },
+          { text: 'hold release', tooltip: 'Gentle hold and release technique for cranial sutures' },
+          { text: 'finger toggle', tooltip: 'A gentle hold with torque followed by a HVLA thrust' },
+          { text: 'CSF guided release', tooltip: 'Cerebrospinal fluid guided release technique' }
+        ],
+        commonProtocols: [
+          { text: 'Howat 8 step Protocol', tooltip: 'Cranial detorque correction' },
+          { text: 'Carter Nose correction protocol', tooltip: 'Nasal structure correction' },
+          { text: 'Carter Sphenoid correction', tooltip: 'Protocol for sphenoid bone correction' }
+        ],
+        'Occipital': {
+          positions: [
+            { text: 'Occipito-mastoid suture', tooltip: 'Contact at occipito-mastoid junction' },
+            { text: 'Lamboidal suture', tooltip: 'Contact at lamboidal suture' }
+          ]
+        },
+        'Sphenoid': { positions: [ { text: 'Pterion' }, { text: 'Spheno-parietal Suture' }, { text: 'Spheno-frontal Suture' }, { text: 'Spheno-squamous Suture' }, { text: 'Spheno-zygomatic suture' } ] },
+        'Maxilla': { positions: [ { text: 'Inter Maxillary Suture' }, { text: 'Median Palatine Suture' }, { text: 'Transverse Palatine suture' }, { text: 'Incisive suture' }, { text: 'Zygomatico-maxillary suture' }, { text: 'Lacrimo-maxillary suture' }, { text: 'Fronto maxillary suture' }, { text: 'Naso-maxillary suture' } ] },
+        'Frontal': { positions: [ { text: 'Sagittal Suture' }, { text: 'Frontal Suture' }, { text: 'Frontonasal suture' }, { text: 'Fronto maxillary suture' }, { text: 'Fronto-lacrimal suture' }, { text: 'Fronto-zygomatic suture' }, { text: 'CCJ cranial detorque protocol' } ] },
+        'Parietal': { positions: [ { text: 'Sagittal Suture' }, { text: 'Squamous Suture' }, { text: 'Spheno-parietal Suture' }, { text: 'Parietomastoid Suture' }, { text: 'Lamboidal suture' } ] },
+        'Temporal': { positions: [ { text: 'Squamous Suture' }, { text: 'Temporo-zygomatic suture' }, { text: 'Spheno-squamous Suture' }, { text: 'Occipito-mastoid suture' }, { text: 'Parietomastoid Suture' }, { text: 'TMJ' } ] },
+        'Zygomatic': { positions: [ { text: 'Temporo-zygomatic suture' }, { text: 'Spheno-zygomatic suture' }, { text: 'Zygomatico-maxillary suture' }, { text: 'Fronto-zygomatic suture' } ] },
+        'Ethmoid': { positions: [ { text: 'Internasal suture' }, { text: 'Nose protocol' }, { text: 'Nasal cartilage' } ] },
+        'Vomer': { positions: [ { text: 'Median Palatine Suture' }, { text: 'Gum release' } ] },
+        'Mandible': { positions: [ { text: 'TMJ AI/PS' }, { text: 'Mentalis Suture' }, { text: 'Gum release' } ] }
+      },
+      'Cervical': {
+        'Occiput': {
+          listings: [ 'PS','PS-LS','PS-RS','AS','AS-LS','AS-RS','Left posterior Facet','Right posterior Facet','Bilateral posterior Facet' ].map(text=>({text})),
+          positions: [ 'Prone','Supine','Seated','Side posture','Side Posture Toggle Recoil with drop' ].map(text=>({text})),
+          types: [ 'Osseous','De-compression','Toggle Recoil','Finger toggle','Drop','Hold','Dural Breath' ].map(text=>({text}))
+        },
+        'C1/Atlas': {
+          listings: [ 'ASR','ASR-P','ASR-A','PIR','PIR-P','PIR-A','ASL','ASL-P','ASL-A','PIL','PIL-P','PIL-A','Left posterior Facet','Right posterior Facet','Bilateral posterior Facet','Left anterior Facet','Right anterior Facet','Bilateral anterior Facet' ].map(text=>({text})),
+          positions: [ 'Prone','Supine','Seated','Side posture' ].map(text=>({text})),
+          contacts: [ 'TVP contact','Posterior arch contact' ].map(text=>({text})),
+          types: [ 'Side Posture Toggle Recoil with drop','Osseous','Toggle Recoil','Finger toggle','Hold','Drop','Dural Breath','Coupled Motion','Lateral flexion','Rotation','De-compression','Pull','NUCCA' ].map(text=>({text}))
+        },
+        'C2-7': {
+          listings: [ 'Left posterior Facet','Right posterior Facet','Bilateral posterior Facet','ASR-la','ASL-la','PR','PRS','PRI-la','PL','PLS','PLI-la','A2N','AL Disc','AR Disc','AL Facet','AR Facet' ].map(text=>({text})),
+          positions: [ 'Prone','Supine','Seated','Side posture' ].map(text=>({text})),
+          contacts: [ 'TVP contact','SP contact','Lamina contact','Articular pillar contact' ].map(text=>({text})),
+          types: [ 'Osseous','Side Posture Toggle Recoil with drop','Drop','Toggle Recoil','Finger toggle','Hold','Dural Breath','Coupled Motion','Lateral flexion','Rotation','De-compression','Pull' ].map(text=>({text}))
+        }
+      },
+      'Thoracic': {
+        listings: [ 'Bilateral Facet','Left facet','Right facet','Left Rib','Right Rib','PR','PRS','PRI-t','PL','PLS','PLI-t','Left side slip','Right side slip','Anterior','AR','ARS','ARI-t','AL','ALI-t','Anterior Rib Cartilage','Left posterior Facet','Right posterior Facet','Bilateral posterior Facet' ].map(text=>({text})),
+        positions: [ 'Prone','Supine','Standing','Seated' ].map(text=>({text})),
+        contacts: [ 'X Bilateral','Double thenar','Unilateral Reinforced','TVP contact','SP contact','Thumb Contact','Double Finger Reinforced','ABC roll','Anterior Thoracic' ].map(text=>({text})),
+        types: [ 'Osseous','Drop','Finger Toggle','Hold','Dural Breath','Inhalation','Expiration' ].map(text=>({text}))
+      },
+      'Lumbar': {
+        listings: [ 'Left posterior Facet','Right posterior Facet','PR','PRS','PRI-m','PL','PLS','PLI-m','Anterior' ].map(text=>({text})),
+        positions: [ 'Side posture','Prone','Supine','Standing' ].map(text=>({text})),
+        contacts: [ 'SP contact','Mammillary contact' ].map(text=>({text})),
+        types: [ 'Osseous','Push move','Pull move','Coupled Motion','ISU','ISD','Drop','Finger Toggle','Hold','Dural Breath','ABC roll' ].map(text=>({text}))
+      },
+      'Pelvis': {
+        listings: [ 'PI','PIIn','PIEx','AS','ASIn','ASEx','Ex','In','Ex/In','In/Ex' ].map(text=>({text})),
+        positions: [ 'Side posture','Prone','Supine','Standing' ].map(text=>({text})),
+        types: [ 'Osseous','Drop','Blocked','Finger toggle','Hold','Dural Breath','Push move','Pull move','Pump' ].map(text=>({text}))
+      },
+      'Sacrum & coccyx': {
+        listings: [ 'P','P-L','P-R','P-L inf','P-R inf','L-inf','R-inf','A-L','A-R','A-L-inf','A-R-inf' ].map(text=>({text})),
+        positions: [ 'Side posture','Prone','Supine' ].map(text=>({text})),
+        types: [ 'Osseous','ISU','ISD','Push move','Pull move','Drop','Finger Toggle','Hold','Dural Breath','Logan Basic L','Logan Basic R' ].map(text=>({text}))
+      },
+      'Extremities': {
+        listings: [ 'LEFT','RIGHT','BILATERAL','TMJ','Shoulder','Elbow','Wrist','Hand','Hip','Knee','Ankle','Foot' ].map(text=>({text})),
+        positions: [ 'Supine','Seated','Standing','Prone','Side posture' ].map(text=>({text})),
+        contacts: [ 'Medial','Intermediate','Lateral' ].map(text=>({text})),
+        types: [ 'Osseous','Drop','Stimulation' ].map(text=>({text}))
+      }
+    };
 
     /* ===== State ===== */
     let selectedBone = '';
@@ -298,7 +266,9 @@
 
     const $ = (s, r=document)=>r.querySelector(s);
     const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
-    const btn = (t, cls='selection-button')=>{ const d=document.createElement('div'); d.className=cls; d.textContent=t; return d; };
+    const btn = (t, cls='selection-button')=>{ const d=document.createElement('div'); d.className=cls; d.textContent=t; d.setAttribute('tabindex','0'); d.setAttribute('role','option'); d.setAttribute('aria-selected','false'); return d; };
+
+    function setSel(el, yes){ el.classList.toggle('selected', !!yes); el.setAttribute('aria-selected', yes? 'true':'false'); }
 
     function badgeUpdate(){
       const set=(k,v)=>{ const el=$(`[data-rb="${k}"]`); if(!el) return; if(Array.isArray(v)) el.textContent=v.length? v.join(', '):'—'; else el.textContent=v||'—'; };
@@ -314,7 +284,7 @@
     function clearPending(){
       selectedBone=''; selectedCategory='';
       selectedListings=[]; selectedPositions=[]; selectedContacts=[]; selectedTypes=[]; selectedProtocols=[];
-      $$('.selected').forEach(x=>x.classList.remove('selected'));
+      $$('.selected').forEach(x=>setSel(x,false));
       ['listings','positions','contacts','types','protocols'].forEach(id=>$('#'+id).innerHTML='');
       badgeUpdate();
       const b=$('#btn-add-row'); if(b) b.textContent='Add Row';
@@ -332,20 +302,14 @@
         if(subKeys.length && typeof section[subKeys[0]] === 'object' && !Array.isArray(section[subKeys[0]]) ){
           subKeys.forEach(sub=>{
             const b=btn(sub,'selectable');
-            b.addEventListener('click',()=>{
-              $$('#bones .selected').forEach(x=>x.classList.remove('selected')); b.classList.add('selected');
-              selectedBone=sub; selectedCategory=sectionName; badgeUpdate();
-              renderRightPanelFor(sectionName, sub);
-            });
+            b.addEventListener('click',()=>{ $$('#bones .selected').forEach(x=>setSel(x,false)); setSel(b,true); selectedBone=sub; selectedCategory=sectionName; badgeUpdate(); renderRightPanelFor(sectionName, sub); });
+            b.addEventListener('keydown', (e)=>handleOptionKeys(e, ()=>b.click(), inner));
             inner.appendChild(b);
           });
         } else {
           const b=btn(sectionName,'selectable');
-          b.addEventListener('click',()=>{
-            $$('#bones .selected').forEach(x=>x.classList.remove('selected')); b.classList.add('selected');
-            selectedBone=sectionName; selectedCategory=sectionName; badgeUpdate();
-            renderRightPanelFor(sectionName, null);
-          });
+          b.addEventListener('click',()=>{ $$('#bones .selected').forEach(x=>setSel(x,false)); setSel(b,true); selectedBone=sectionName; selectedCategory=sectionName; badgeUpdate(); renderRightPanelFor(sectionName, null); });
+          b.addEventListener('keydown', (e)=>handleOptionKeys(e, ()=>b.click(), inner));
           inner.appendChild(b);
         }
         host.appendChild(wrap);
@@ -359,53 +323,73 @@
       const section=listingsData[sectionName];
       const block=sub? section[sub] : section;
 
+      // Listings (single-select)
       const listingsHost=$('#listings');
       const listings=(block && block.listings) || (section.commonListings) || [];
       listings.forEach(it=>{
         const text=(it.text||it);
         const d=btn(text);
         d.addEventListener('click',()=>{
-          $$('#listings .selected').forEach(x=>{if(x!==d) x.classList.remove('selected')});
-          d.classList.toggle('selected');
-          selectedListings=$$('#listings .selected').map(x=>x.textContent.trim());
+          $$('#listings .selected').forEach(x=>setSel(x,false));
+          if(!d.classList.contains('selected')){ setSel(d,true); selectedListings=[text]; } else { selectedListings=[]; }
           badgeUpdate();
         });
+        d.addEventListener('keydown', (e)=>handleOptionKeys(e, ()=>d.click(), listingsHost));
         listingsHost.appendChild(d);
       });
 
+      // Positions (multi)
       const positionsHost=$('#positions');
       const positions=(block && block.positions) || [];
       positions.forEach(it=>{
-        const d=btn(it.text||it);
-        d.addEventListener('click',()=>{ d.classList.toggle('selected'); selectedPositions=$$('#positions .selected').map(x=>x.textContent.trim()); badgeUpdate(); });
+        const text=(it.text||it); const d=btn(text);
+        d.addEventListener('click',()=>{ setSel(d,!d.classList.contains('selected')); selectedPositions=$$('#positions .selected').map(x=>x.textContent.trim()); badgeUpdate(); });
+        d.addEventListener('keydown', (e)=>handleOptionKeys(e, ()=>d.click(), positionsHost));
         positionsHost.appendChild(d);
       });
 
+      // Contacts (multi)
       const contactsHost=$('#contacts');
       const contacts=(block && block.contacts) || [];
       contacts.forEach(it=>{
-        const d=btn(it.text||it);
-        d.addEventListener('click',()=>{ d.classList.toggle('selected'); selectedContacts=$$('#contacts .selected').map(x=>x.textContent.trim()); badgeUpdate(); });
+        const text=(it.text||it); const d=btn(text);
+        d.addEventListener('click',()=>{ setSel(d,!d.classList.contains('selected')); selectedContacts=$$('#contacts .selected').map(x=>x.textContent.trim()); badgeUpdate(); });
+        d.addEventListener('keydown', (e)=>handleOptionKeys(e, ()=>d.click(), contactsHost));
         contactsHost.appendChild(d);
       });
 
+      // Types (multi)
       const typesHost=$('#types');
       const types=(block && block.types) || (section.commonTypes) || [];
       types.forEach(it=>{
-        const d=btn(it.text||it);
-        d.addEventListener('click',()=>{ d.classList.toggle('selected'); selectedTypes=$$('#types .selected').map(x=>x.textContent.trim()); badgeUpdate(); });
+        const text=(it.text||it); const d=btn(text);
+        d.addEventListener('click',()=>{ setSel(d,!d.classList.contains('selected')); selectedTypes=$$('#types .selected').map(x=>x.textContent.trim()); badgeUpdate(); });
+        d.addEventListener('keydown', (e)=>handleOptionKeys(e, ()=>d.click(), typesHost));
         typesHost.appendChild(d);
       });
 
+      // Protocols (multi)
       const protocolsHost=$('#protocols');
       const protocols=(block && block.protocols) || (section.commonProtocols) || [];
       protocols.forEach(it=>{
-        const d=btn(it.text||it);
-        d.addEventListener('click',()=>{ d.classList.toggle('selected'); selectedProtocols=$$('#protocols .selected').map(x=>x.textContent.trim()); badgeUpdate(); });
+        const text=(it.text||it); const d=btn(text);
+        d.addEventListener('click',()=>{ setSel(d,!d.classList.contains('selected')); selectedProtocols=$$('#protocols .selected').map(x=>x.textContent.trim()); badgeUpdate(); });
+        d.addEventListener('keydown', (e)=>handleOptionKeys(e, ()=>d.click(), protocolsHost));
         protocolsHost.appendChild(d);
       });
 
       badgeUpdate();
+    }
+
+    // Keyboard handling for options
+    function handleOptionKeys(e, onActivate, container){
+      const key=e.key; const target=e.target.closest('[role="option"]'); if(!target) return;
+      const items=$$('[role="option"]', container);
+      const idx=items.indexOf(target);
+      if(key==='Enter' || key===' '){ e.preventDefault(); onActivate(); return; }
+      if(key==='ArrowDown'){ e.preventDefault(); (items[idx+1]||items[0])?.focus(); return; }
+      if(key==='ArrowUp'){ e.preventDefault(); (items[idx-1]||items[items.length-1])?.focus(); return; }
+      if(key==='Escape'){ target.blur(); return; }
     }
 
     function buildLineText(row){
@@ -419,8 +403,8 @@
         const li=document.createElement('li'); li.className='saved-item';
         li.innerHTML=`<div class="saved-text">${buildLineText(row)}</div>
           <div>
-            <button class="icon-btn" data-edit="${idx}">✎ Edit</button>
-            <button class="icon-btn" data-del="${idx}">🗑️ Delete</button>
+            <button class="icon-btn" data-edit="${idx}" aria-label="Edit row ${idx+1}">✎ Edit</button>
+            <button class="icon-btn" data-del="${idx}" aria-label="Delete row ${idx+1}">🗑️ Delete</button>
           </div>`;
         ul.appendChild(li);
       });
@@ -442,9 +426,9 @@
       const row=savedRows[idx]; if(!row) return; clearPending();
       let secName=null; Object.keys(listingsData).forEach(name=>{ if(listingsData[name][row.bone]) secName=name; }); if(!secName && listingsData[row.bone]) secName=row.bone; if(!secName) secName = selectedCategory || Object.keys(listingsData)[0];
       selectedCategory=secName; selectedBone=row.bone;
-      $$('#bones .selectable').forEach(el=>{ if(el.textContent.trim()===row.bone || el.textContent.trim()===secName && secName===row.bone) el.classList.add('selected'); else el.classList.remove('selected'); });
+      $$('#bones .selectable').forEach(el=>{ if(el.textContent.trim()===row.bone || el.textContent.trim()===secName && secName===row.bone) setSel(el,true); else setSel(el,false); });
       renderRightPanelFor(secName, listingsData[secName][row.bone] ? row.bone : null);
-      function selectIn(hostId, values){ values.forEach(v=>{ $(`#${hostId}`)?.querySelectorAll('.selection-button')?.forEach(el=>{ if(el.textContent.trim()===v) el.classList.add('selected'); }); }); }
+      function selectIn(hostId, values){ values.forEach(v=>{ $(`#${hostId}`)?.querySelectorAll('.selection-button')?.forEach(el=>{ if(el.textContent.trim()===v) setSel(el,true); }); }); }
       selectedListings=[row.listing]; selectIn('listings',[row.listing]);
       selectedPositions=row.positions||[]; selectIn('positions',selectedPositions);
       selectedContacts=row.contacts||[]; selectIn('contacts',selectedContacts);
@@ -470,18 +454,22 @@
           const input=btnEl.previousElementSibling; const txt=(input.value||'').trim(); if(!txt) return; input.value='';
           const host=$('#'+(key==='listings'?'listings':key)); const d=btn(txt);
           host.prepend(d);
-          if(key==='listings'){ $$('#listings .selected').forEach(x=>x.classList.remove('selected')); d.classList.add('selected'); selectedListings=[txt]; }
-          else if(key==='positions'){ d.addEventListener('click',()=>{ d.classList.toggle('selected'); selectedPositions=$$('#positions .selected').map(x=>x.textContent.trim()); badgeUpdate(); }); d.classList.add('selected'); selectedPositions.unshift(txt); }
-          else if(key==='contacts'){ d.addEventListener('click',()=>{ d.classList.toggle('selected'); selectedContacts=$$('#contacts .selected').map(x=>x.textContent.trim()); badgeUpdate(); }); d.classList.add('selected'); selectedContacts.unshift(txt); }
-          else if(key==='types'){ d.addEventListener('click',()=>{ d.classList.toggle('selected'); selectedTypes=$$('#types .selected').map(x=>x.textContent.trim()); badgeUpdate(); }); d.classList.add('selected'); selectedTypes.unshift(txt); }
-          else if(key==='protocols'){ d.addEventListener('click',()=>{ d.classList.toggle('selected'); selectedProtocols=$$('#protocols .selected').map(x=>x.textContent.trim()); badgeUpdate(); }); d.classList.add('selected'); selectedProtocols.unshift(txt); }
+          if(key==='listings'){ $$('#listings .selected').forEach(x=>setSel(x,false)); setSel(d,true); selectedListings=[txt]; }
+          else if(key==='positions'){ d.addEventListener('click',()=>{ setSel(d,!d.classList.contains('selected')); selectedPositions=$$('#positions .selected').map(x=>x.textContent.trim()); badgeUpdate(); }); setSel(d,true); selectedPositions.unshift(txt); }
+          else if(key==='contacts'){ d.addEventListener('click',()=>{ setSel(d,!d.classList.contains('selected')); selectedContacts=$$('#contacts .selected').map(x=>x.textContent.trim()); badgeUpdate(); }); setSel(d,true); selectedContacts.unshift(txt); }
+          else if(key==='types'){ d.addEventListener('click',()=>{ setSel(d,!d.classList.contains('selected')); selectedTypes=$$('#types .selected').map(x=>x.textContent.trim()); badgeUpdate(); }); setSel(d,true); selectedTypes.unshift(txt); }
+          else if(key==='protocols'){ d.addEventListener('click',()=>{ setSel(d,!d.classList.contains('selected')); selectedProtocols=$$('#protocols .selected').map(x=>x.textContent.trim()); badgeUpdate(); }); setSel(d,true); selectedProtocols.unshift(txt); }
+          d.addEventListener('keydown', (e)=>handleOptionKeys(e, ()=>d.click(), host));
           badgeUpdate();
         });
       });
     }
 
     let activeSoap='S';
-    function wireSoap(){ $$('.soap-header').forEach(h=>h.addEventListener('click',()=>{ activeSoap=h.getAttribute('data-soap'); $$('.soap-area').forEach(a=>a.classList.remove('active-section')); $('#soap-'+activeSoap).classList.add('active-section'); })); $('#soap-S').classList.add('active-section'); }
+    function wireSoap(){
+      $$('.soap-header').forEach(h=>h.addEventListener('click',()=>{ activeSoap=h.getAttribute('data-soap'); $$('.soap-area').forEach(a=>a.classList.remove('active-section')); $('#soap-'+activeSoap).classList.add('active-section'); }));
+      $('#soap-S').classList.add('active-section');
+    }
 
     document.addEventListener('click',e=>{
       if(e.target.matches('#btn-add-row')) addRow();
@@ -502,3 +490,5 @@
   </script>
 </body>
 </html>
+
+
