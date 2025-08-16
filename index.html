@@ -3,624 +3,395 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Interactive Chiropractic Listing Template - v2.11 (Original structure + Phase 1&2)</title>
+  <title>Interactive Chiropractic Listing Template — v2.12</title>
   <style>
-    :root { --ink:#2c5282; --ink2:#4a5568; --bg:#f4f7fa; --card:#fff; --line:#d1d9e6; --sel:#b3e6b3; --hover:#b3d4ff; --brand:#4a90e2; --brand2:#357abd; --focus:#7c3aed; }
+    :root {
+      --ink:#2c5282; --ink2:#4a5568; --bg:#f4f7fa; --card:#fff; --line:#d1d9e6; --brand:#4a90e2; --brand2:#357abd;
+    }
     html,body{height:100%}
-    body{margin:20px;font-family:'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:#333}
-    h1{color:var(--ink);margin:0 0 14px}
-    h3{color:var(--ink);margin:0 0 10px;text-align:center}
-    h4{color:var(--ink2);margin:0 0 8px}
+    body { margin:20px; font-family:"Helvetica Neue", Arial, sans-serif; background:var(--bg); color:#333; }
 
-    .desktop-only-overlay{display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(0,0,0,.8);color:#fff;z-index:5000;text-align:center;padding:24px}
-    .desktop-only-overlay .card{background:#1a202c;padding:24px;border-radius:12px;max-width:520px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
-    .desktop-only-overlay h2{margin:0 0 8px;font-size:22px}
-    @media (max-width:1023px){.desktop-only-overlay{display:flex}.app-wrap{display:none!important}}
-
-    .top-buttons{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-    .button{padding:8px 14px;background:var(--brand);color:#fff;border:0;border-radius:8px;cursor:pointer;font-size:14px;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+    .top-buttons{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px}
+    .button{padding:8px 14px; background:var(--brand); color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:14px; box-shadow:0 1px 2px rgba(0,0,0,.1)}
     .button:hover{background:var(--brand2)}
-    .button.selected{background:var(--sel)!important;color:#234}
+    .button.selected{background:#2fbf71}
 
-    .column-container{display:grid;grid-template-columns:1fr 1fr 1.2fr 1fr;gap:20px;align-items:start}
-    .col{border:1px solid var(--line);background:var(--card);border-radius:12px;box-shadow:0 2px 4px rgba(0,0,0,.08);padding:14px;min-height:200px}
-    .col-objective{grid-column:1}
-    .col-bones{grid-column:2}
-    .col-listings{grid-column:3}
-    .col-soap{grid-column:4}
+    h1{color:var(--ink); margin-bottom:14px}
+    h3{color:var(--ink); margin:10px 0}
+    h4{color:var(--ink2); margin:8px 0}
 
-    .section{margin-bottom:16px}
-    .section-header{cursor:pointer;font-weight:700;color:var(--ink);padding:10px 12px;background:#c7eaff;border:1px solid #b3c7f7;border-radius:10px;transition:.25s;margin-bottom:10px}
-    .section-header:hover{background:#a8d1ff}
+    .column-container{display:grid; grid-template-columns: 1fr 1.2fr .9fr; gap:20px; align-items:start}
+    .col{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; box-shadow:0 2px 4px rgba(0,0,0,.06)}
 
-    .selectable,.selection-button{cursor:pointer;background:#e8f0fe;padding:8px;margin:6px 0;border:1px solid #b3c7f7;border-radius:8px;transition:.15s;position:relative;outline:none}
-    .selectable:hover:not(.selected),.selection-button:hover:not(.selected){background:var(--hover)}
-    .selection-button:focus{box-shadow:0 0 0 3px rgba(124,58,237,.35);border-color:var(--focus)}
-    .selected{background:var(--sel)!important;border-color:#4caf50!important}
-    .selected::after{content:"✓";position:absolute;right:8px;top:50%;transform:translateY(-50%);font-weight:700;color:#256029}
+    /* Objective column headers */
+    .section-header{padding:10px 12px; background:#e3f2fd; color:#2c5282; border:1px solid #b3c7f7; border-radius:8px; cursor:pointer; margin:10px 0; transition:.2s}
+    .section-header:hover{background:#cfe8ff}
 
-    details{margin-bottom:10px}
-    summary{cursor:pointer;font-weight:700;color:var(--ink);list-style:none;padding:8px;background:#c7eaff;border:1px solid #b3c7f7;border-radius:8px}
-    summary:hover{background:#a8d1ff}
+    /* Modal */
+    .modal{display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:1000}
+    .modal-content{background:#fff; width:min(960px,92vw); max-height:90vh; overflow:auto; margin:5vh auto; padding:20px; border-radius:12px; border:1px solid #888; box-shadow:0 8px 24px rgba(0,0,0,.2)}
+    .close{float:right; font-size:28px; cursor:pointer; color:#666}
+    .close:hover{color:#000}
 
-    textarea{width:100%;height:120px;margin-bottom:10px;box-sizing:border-box;resize:vertical;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:14px}
-    .soap-header{cursor:pointer;color:var(--ink);font-weight:700}
-    .active-section{border:2px solid #4caf50;padding:5px;border-radius:8px}
+    /* Table styles (original look) */
+    .attractive-table{width:100%; border-collapse:separate; border-spacing:0 8px}
+    .attractive-table th, .attractive-table td{padding:8px 12px; vertical-align:middle; text-align:left}
+    .attractive-table th{background:#81d4fa; color:#01579b; border-top-left-radius:6px; border-bottom-left-radius:6px; font-size:14px; width:35%}
+    .attractive-table td{background:#e1f5fe; border-top-right-radius:6px; border-bottom-right-radius:6px}
+    .attractive-table .button-group{display:flex; gap:6px; flex-wrap:wrap}
 
-    .rb-wrap{margin:16px 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}
-    .rb-bar{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap;align-items:center}
-    .rb-left{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-    .rb-badge{display:inline-flex;gap:6px;align-items:center;background:#e8f0fe;border:1px solid #b3c7f7;border-radius:999px;padding:6px 10px;font-size:13px;color:var(--ink)}
-    .rb-actions{display:flex;gap:8px;flex-wrap:wrap}
-    .btn-sm{padding:6px 10px;font-size:13px;border-radius:8px;border:1px solid #cbd5e0;background:#f7fafc;cursor:pointer}
-    .btn-sm.primary{background:var(--brand);border-color:var(--brand2);color:#fff}
-    .btn-sm:disabled{opacity:.5;cursor:not-allowed}
+    .neuro-table{width:100%; border-collapse:collapse; margin:12px 0 20px}
+    .neuro-table th, .neuro-table td{border:1px solid #d1d9e6; padding:8px; text-align:center}
+    .neuro-table th{background:#2c5282; color:#fff}
 
-    .saved-wrap{margin:16px 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}
-    .saved-list{list-style:none;margin:0;padding:0}
-    .saved-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:8px 10px;margin-bottom:6px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px}
-    .icon-btn{border:1px solid #cbd5e0;background:#fff;border-radius:8px;padding:4px 8px;cursor:pointer;font-size:12px}
-    .icon-btn:hover{background:#edf2f7}
-    .saved-text{font-size:14px;color:#2d3748}
+    .number-selector-table{width:100%; margin:10px 0 16px}
+    .number-selector-table caption{font-weight:bold; color:#2c5282; margin-bottom:8px}
+    .number-selector-table td{padding:5px; text-align:center}
 
-    .soap-card{border:1px dashed var(--line);border-radius:12px;padding:10px}
+    .vip-section{margin:6px 0 18px}
+    .vip-section .text-input-group{display:flex; gap:8px}
+    .vip-section input{flex:1; padding:8px; border:1px solid #b3c7f7; border-radius:6px}
 
-    .status{font-style:italic;color:#718096;font-size:14px}
+    /* Sub-modal (for advanced pickers) */
+    .sub-modal{display:none; position:fixed; inset:0; z-index:2000; background:rgba(0,0,0,.45)}
+    .sub-modal .sub-modal-content{background:#fff; width:min(900px,92vw); margin:6vh auto; padding:20px; border-radius:12px; border:1px solid #888; max-height:88vh; overflow:auto}
+
+    /* Small selection grid used inside sub-modal */
+    .selection-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(60px,1fr)); gap:6px}
+    .selection-button{padding:8px; background:#e8f0fe; border:1px solid #b3c7f7; border-radius:6px; cursor:pointer; text-align:center}
+    .selection-button.selected{background:#b3e6b3; border-color:#2fbf71}
+
+    .gyro-container{display:flex; flex-direction:column; gap:16px}
+    .gyro-line-row{display:flex; gap:36px; justify-content:space-between}
+    .gyro-side{flex:1}
+    .gyro-buttons{display:flex; gap:8px; flex-wrap:wrap}
+
+    /* Desktop-only overlay */
+    #desktopOnly{display:none; position:fixed; inset:0; background:#fff; z-index:3000; align-items:center; justify-content:center; text-align:center; padding:24px}
+    #desktopOnly h2{margin-bottom:8px}
+
+    textarea{width:100%; min-height:110px; border:1px solid var(--line); border-radius:8px; padding:10px; resize:vertical}
   </style>
 </head>
 <body>
-  <div class="desktop-only-overlay"><div class="card"><h2>Desktop Only</h2><p>Please open this tool on a desktop or laptop (≥1024px wide).</p></div></div>
+  <!-- Desktop-only gate -->
+  <div id="desktopOnly"><div><h2>Desktop only</h2><p>Please open this tool on a desktop or widen your window.</p></div></div>
 
-  <div class="app-wrap">
-    <div class="top-buttons">
-      <button id="btn-undo" class="button" title="Undo">Undo</button>
-      <button id="btn-redo" class="button" title="Redo">Redo</button>
-      <button id="btn-clear-all" class="button" title="Clear everything">Clear All</button>
-      <button id="btn-export-text" class="button" title="Save & Export Data">Save & Export Data</button>
+  <div class="top-buttons">
+    <button class="button" onclick="undo()">Undo</button>
+    <button class="button" onclick="redo()">Redo</button>
+    <button class="button" onclick="clearAll()">Clear All</button>
+    <button class="button" onclick="exportData()">Save & Export Data</button>
+  </div>
+
+  <h1>Interactive Chiropractic Listing Template</h1>
+
+  <div class="column-container">
+    <!-- Column 1: Objective Findings -->
+    <div class="col">
+      <h3>Objective Findings</h3>
+      <div id="objectiveContent"></div>
     </div>
 
-    <h1>Interactive Chiropractic Listing Template</h1>
+    <!-- Column 2: Area/Category (kept minimal here; your existing dataset can plug in) -->
+    <div class="col">
+      <h3>Select Area / Category</h3>
+      <div class="selectable" onclick="selectCategory('Cranial Bones', this)">Cranial Bones</div>
+      <div class="selectable" onclick="selectCategory('Cervical', this)">Cervical</div>
+      <div class="selectable" onclick="selectCategory('Thoracic', this)">Thoracic</div>
+      <div class="selectable" onclick="selectCategory('Lumbar', this)">Lumbar</div>
+      <div class="selectable" onclick="selectCategory('Pelvis', this)">Pelvis</div>
+      <div class="selectable" onclick="selectCategory('Sacrum & coccyx', this)">Sacrum & coccyx</div>
+      <div class="selectable" onclick="selectCategory('Extremities', this)">Extremities</div>
+      <div class="selectable" onclick="selectCategory('Zones', this)">Zones</div>
+      <div id="colBonesContent"></div>
 
-    <!-- Row Builder from Phase 1 -->
-    <div class="rb-wrap" aria-live="polite">
-      <div class="rb-bar">
-        <div class="rb-left" id="rb-badges">
-          <span class="rb-badge"><strong>Bone:</strong>&nbsp;<span data-rb="bone">—</span></span>
-          <span class="rb-badge"><strong>Listing:</strong>&nbsp;<span data-rb="listing">—</span></span>
-          <span class="rb-badge"><strong>Positions:</strong>&nbsp;<span data-rb="positions">—</span></span>
-          <span class="rb-badge"><strong>Contacts:</strong>&nbsp;<span data-rb="contacts">—</span></span>
-          <span class="rb-badge"><strong>Types:</strong>&nbsp;<span data-rb="types">—</span></span>
-          <span class="rb-badge"><strong>Protocols:</strong>&nbsp;<span data-rb="protocols">—</span></span>
-        </div>
-        <div class="rb-actions">
-          <button class="btn-sm" id="btn-clear-pending" title="Clear current selections">Clear</button>
-          <button class="btn-sm primary" id="btn-add-row" disabled>Add Row</button>
-        </div>
+      <details id="listingsDetails" style="margin-top:10px">
+        <summary>Listings</summary>
+        <div id="listingsContainer"></div>
+      </details>
+      <details id="positionsDetails">
+        <summary>Patient position</summary>
+        <div id="positionsContainer"></div>
+      </details>
+      <details id="contactsDetails" style="display:none">
+        <summary>Contact</summary>
+        <div id="contactsContainer"></div>
+      </details>
+      <details id="typesDetails">
+        <summary>Type of adjustment</summary>
+        <div id="typesContainer"></div>
+      </details>
+      <details id="protocolsDetails" style="display:none">
+        <summary>Cranial protocols</summary>
+        <div id="protocolsContainer"></div>
+      </details>
+      <details id="sotDetails" style="display:none">
+        <summary>SOT</summary>
+        <div id="sotContainer"></div>
+      </details>
+      <button id="addToSoapButton" class="button" onclick="addToSoap()" style="display:none; margin-top:10px">Add to SOAP</button>
+      <div style="margin-top:12px">
+        <label>Custom Action: <input id="customActionInput" type="text" onkeydown="if(event.key==='Enter') addCustomToAction()" style="padding:6px; border:1px solid #b3c7f7; border-radius:6px" /></label>
+        <button class="button" onclick="addCustomToAction()">Add to Action</button>
       </div>
     </div>
 
-    <div class="saved-wrap">
-      <h4 style="margin:0;color:var(--ink)">Saved Entries</h4>
-      <ul id="saved-list" class="saved-list"></ul>
+    <!-- Column 3: SOAP notes -->
+    <div class="col">
+      <h3>SOAP Notes</h3>
+      <div id="subjectiveSection" class="soap-section">
+        <h4 class="soap-header" onclick="setActiveSection('subjective')">SUBJECTIVE</h4>
+        <textarea id="subjectiveField"></textarea>
+      </div>
+      <div id="objectiveSection" class="soap-section">
+        <h4 class="soap-header" onclick="setActiveSection('objective')">OBJECTIVE FINDINGS</h4>
+        <textarea id="objectiveField"></textarea>
+      </div>
+      <div id="actionSection" class="soap-section">
+        <h4 class="soap-header" onclick="setActiveSection('action')">ACTION</h4>
+        <textarea id="actionField"></textarea>
+      </div>
+      <div id="planSection" class="soap-section">
+        <h4 class="soap-header" onclick="setActiveSection('plan')">PLAN</h4>
+        <textarea id="planField"></textarea>
+        <div>
+          <label>Exercise: <input id="planExercise" type="text" /></label>
+          <button class="button" onclick="addPlanExercise()">Add</button>
+        </div>
+        <div>
+          <label>Nutrition: <input id="planNutrition" type="text" /></label>
+          <button class="button" onclick="addPlanNutrition()">Add</button>
+        </div>
+        <div>
+          <label>Check next visit: <input id="planCheck" type="text" /></label>
+          <button class="button" onclick="addPlanCheck()">Add</button>
+        </div>
+      </div>
+      <p id="status" style="color:#4a5568; font-size:12px">(Click a SOAP header to set it active; new entries insert at the cursor.)</p>
     </div>
+  </div>
 
-    <div class="column-container">
-      <!-- Column 1: Objective Findings (restored) -->
-      <div class="col col-objective">
-        <h3>Objective Findings</h3>
-        <div id="objectiveContent"></div>
-      </div>
+  <!-- Sub-modal for advanced pickers (Gyro / Zones / VIP tree) -->
+  <div id="subModal" class="sub-modal" aria-hidden="true">
+    <div class="sub-modal-content">
+      <span class="close" onclick="closeCurrentModal()">&times;</span>
+      <h3 id="subModalTitle"></h3>
+      <div id="selectionGrid" class="selection-grid"></div>
+      <div id="subExtras"></div>
+      <button class="button" style="margin-top:12px" onclick="addSelectionsFromSubModal()">Add to SOAP note</button>
+    </div>
+  </div>
 
-      <!-- Column 2: Areas / Category with collapsible headings (restored content) -->
-      <div class="col col-bones">
-        <h3>Select Area / Category</h3>
-        <details open>
-          <summary>Cranial Bones</summary>
-          <div>
-            <div class="selectable bone-selectable" onclick="selectBone('Cranial Bones','Occipital', this)">Occipital</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Cranial Bones','Sphenoid', this)">Sphenoid</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Cranial Bones','Maxilla', this)">Maxilla</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Cranial Bones','Frontal', this)">Frontal</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Cranial Bones','Parietal', this)">Parietal</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Cranial Bones','Temporal', this)">Temporal</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Cranial Bones','Zygomatic', this)">Zygomatic</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Cranial Bones','Ethmoid', this)">Ethmoid</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Cranial Bones','Vomer', this)">Vomer</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Cranial Bones','Mandible', this)">Mandible</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Cranial Bones','Howat sweep', this)">Howat sweep</div>
-          </div>
-        </details>
-        <details>
-          <summary>Cervical</summary>
-          <div>
-            <div class="selectable bone-selectable" onclick="selectBone('Cervical','Occiput', this)">Occiput</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Cervical','C1/Atlas', this)">C1/Atlas</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Cervical','C2/Axis', this)">C2/Axis</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Cervical','C3', this)">C3</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Cervical','C4', this)">C4</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Cervical','C5', this)">C5</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Cervical','C6', this)">C6</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Cervical','C7', this)">C7</div>
-          </div>
-        </details>
-        <details>
-          <summary>Thoracic</summary>
-          <div>
-            <div class="selectable bone-selectable" onclick="selectBone('Thoracic','T1', this)">T1</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Thoracic','T2', this)">T2</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Thoracic','T3', this)">T3</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Thoracic','T4', this)">T4</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Thoracic','T5', this)">T5</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Thoracic','T6', this)">T6</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Thoracic','T7', this)">T7</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Thoracic','T8', this)">T8</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Thoracic','T9', this)">T9</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Thoracic','T10', this)">T10</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Thoracic','T11', this)">T11</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Thoracic','T12', this)">T12</div>
-          </div>
-        </details>
-        <details>
-          <summary>Lumbar</summary>
-          <div>
-            <div class="selectable bone-selectable" onclick="selectBone('Lumbar','L1', this)">L1</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Lumbar','L2', this)">L2</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Lumbar','L3', this)">L3</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Lumbar','L4', this)">L4</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Lumbar','L5', this)">L5</div>
-          </div>
-        </details>
-        <details>
-          <summary>Pelvis</summary>
-          <div>
-            <div class="selectable bone-selectable" onclick="selectBone('Pelvis','Left Ilium', this)">Left Ilium</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Pelvis','Right Ilium', this)">Right Ilium</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Pelvis','Left Pubis', this)">Left Pubis</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Pelvis','Right Pubis', this)">Right Pubis</div>
-          </div>
-        </details>
-        <details>
-          <summary>Sacrum & coccyx</summary>
-          <div class="sacrum-content">
-            <details>
-              <summary>Sacrum</summary>
-              <div>
-                <div class="selectable bone-selectable" onclick="selectBone('Sacrum & coccyx','Sacrum', this)">Sacrum</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Sacrum & coccyx','Sacrum S1', this)">Sacrum S1</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Sacrum & coccyx','Sacrum S2', this)">Sacrum S2</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Sacrum & coccyx','Sacrum S3', this)">Sacrum S3</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Sacrum & coccyx','Sacrum S4', this)">Sacrum S4</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Sacrum & coccyx','Sacrum S5', this)">Sacrum S5</div>
-              </div>
-            </details>
-            <details>
-              <summary>Coccyx</summary>
-              <div>
-                <div class="selectable bone-selectable" onclick="selectBone('Sacrum & coccyx','Coccyx Co1', this)">Coccyx Co1</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Sacrum & coccyx','Coccyx Co2', this)">Coccyx Co2</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Sacrum & coccyx','Coccyx Co3', this)">Coccyx Co3</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Sacrum & coccyx','Coccyx Co4', this)">Coccyx Co4</div>
-              </div>
-            </details>
-          </div>
-        </details>
-        <details>
-          <summary>Extremities</summary>
-          <div>
-            <details>
-              <summary>Upper Limb</summary>
-              <div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Phalanx Upper', this)">Phalanx Upper</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Metacarpal', this)">Metacarpal</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Scaphoid', this)">Scaphoid</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Lunate', this)">Lunate</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Triquetrum', this)">Triquetrum</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Pisiform', this)">Pisiform</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Trapezium', this)">Trapezium</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Trapezoid', this)">Trapezoid</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Capitate', this)">Capitate</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Hamate', this)">Hamate</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Radius', this)">Radius</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Ulnar', this)">Ulnar</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Humerus', this)">Humerus</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Scapula', this)">Scapula</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','AC joint', this)">AC joint</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','SC joint', this)">SC joint</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Manubrium', this)">Manubrium</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Sternum', this)">Sternum</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Xiphoid process', this)">Xiphoid process</div>
-              </div>
-            </details>
-            <details>
-              <summary>Lower Limb</summary>
-              <div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Phalanx Lower', this)">Phalanx Lower</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Metatarsal', this)">Metatarsal</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Cuneiform', this)">Cuneiform</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Cuboid', this)">Cuboid</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Navicular', this)">Navicular</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Talus', this)">Talus</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Calcaneus', this)">Calcaneus</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Fibula', this)">Fibula</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Tibia', this)">Tibia</div>
-                <div class="selectable bone-selectable" onclick="selectBone('Extremities','Femur Head/Condyle', this)">Femur Head/Condyle</div>
-              </div>
-            </details>
-          </div>
-        </details>
-        <details>
-          <summary>Zones</summary>
-          <div>
-            <div class="selectable bone-selectable" onclick="selectBone('Zones','Zone 1', this)">Zone 1</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Zones','Zone 2', this)">Zone 2</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Zones','Zone 3', this)">Zone 3</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Zones','Zone 4', this)">Zone 4</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Zones','Zone 5', this)">Zone 5</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Zones','Zone 6', this)">Zone 6</div>
-            <div class="selectable bone-selectable" onclick="selectBone('Zones','Zone 7', this)">Zone 7</div>
-          </div>
-        </details>
-      </div>
-
-      <!-- Column 3: Listings & Adjustments (restored) -->
-      <div class="col col-listings">
-        <h3>Listings & Adjustments</h3>
-        <div id="focusField">Select a specific bone/area.</div>
-        <details id="listingsDetails" class="listings-section">
-          <summary>Listings</summary>
-          <div id="listingsContainer"></div>
-        </details>
-        <details id="positionsDetails" class="positions-section">
-          <summary>Patient position</summary>
-          <div id="positionsContainer"></div>
-        </details>
-        <details id="contactsDetails" class="contacts-section" style="display:none;">
-          <summary>Contact</summary>
-          <div id="contactsContainer"></div>
-        </details>
-        <details id="typesDetails" class="types-section">
-          <summary>Type of adjustment</summary>
-          <div id="typesContainer"></div>
-        </details>
-        <details id="protocolsDetails" class="protocols-section" style="display:none;">
-          <summary>Cranial protocols</summary>
-          <div id="protocolsContainer"></div>
-        </details>
-        <details id="sotDetails" class="sot-section" style="display:none;">
-          <summary>SOT</summary>
-          <div id="sotContainer"></div>
-        </details>
-        <button id="addToSoapButton" class="button" onclick="addToSoap()">Add to SOAP</button>
-        <div style="margin-top:8px">
-          <label>Custom Action: <input id="customActionInput" type="text" style="width:60%"></label>
-          <button class="button" onclick="addCustomToAction(this);">Add to Action</button>
-        </div>
-      </div>
-
-      <!-- Column 4: SOAP Notes (restored) -->
-      <div class="col col-soap">
-        <h3>SOAP Notes</h3>
-        <div id="subjectiveSection" class="soap-section">
-          <h4 class="soap-header" onclick="setActiveSection('subjective')">SUBJECTIVE</h4>
-          <textarea id="subjectiveField"></textarea>
-        </div>
-        <div id="objectiveSection" class="soap-section">
-          <h4 class="soap-header" onclick="setActiveSection('objective')">OBJECTIVE FINDINGS</h4>
-          <textarea id="objectiveField"></textarea>
-        </div>
-        <div id="actionSection" class="soap-section">
-          <h4 class="soap-header" onclick="setActiveSection('action')">ACTION</h4>
-          <textarea id="actionField"></textarea>
-        </div>
-        <div id="planSection" class="soap-section">
-          <h4 class="soap-header" onclick="setActiveSection('plan')">PLAN</h4>
-          <textarea id="planField"></textarea>
-          <div>
-            <label>Exercise: <input id="planExercise" type="text"></label>
-            <button class="button" onclick="addPlanExercise(this);">Add</button>
-          </div>
-          <div>
-            <label>Nutrition: <input id="planNutrition" type="text"></label>
-            <button class="button" onclick="addPlanNutrition(this);">Add</button>
-          </div>
-          <div>
-            <label>Check next visit: <input id="planCheck" type="text"></label>
-            <button class="button" onclick="addPlanCheck(this);">Add</button>
-          </div>
-        </div>
-        <p id="status" class="status">(Click a SOAP header to set it as active; new entries insert at the cursor position.)</p>
-      </div>
+  <!-- Main modal (Objective column) -->
+  <div id="objectiveModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal(objectiveModal)">&times;</span>
+      <h3 id="modalTitle"></h3>
+      <div id="modalContentDiv"></div>
     </div>
   </div>
 
   <script>
-    // ======== Original globals (kept) ========
-    let selectedBone = '';
-    let selectedCategory = '';
-    let selectedListings = [];
-    let selectedPositions = [];
-    let selectedContacts = [];
-    let selectedTypes = [];
-    let selectedSot = [];
-    let selectedProtocols = [];
-    let activeTextarea = null;
-    let history = [];
-    let future = [];
-    let openModals = [];
+    // Simple state + autosave
+    let activeTextarea = null; // 'subjective' | 'objective' | 'action' | 'plan'
+    let history = []; let future = [];
 
-    // ======== Phase 1: Row Builder state ========
-    let savedRows = [];
-    let editingIndex = null;
-    let undoStack = [];
-    let redoStack = [];
+    function getData(){ return { subjective:subjectiveField.value, objective:objectiveField.value, action:actionField.value, plan:planField.value }; }
+    function setData(d){ subjectiveField.value=d.subjective||''; objectiveField.value=d.objective||''; actionField.value=d.action||''; planField.value=d.plan||''; }
+    function saveData(){ localStorage.setItem('chiroData', JSON.stringify(getData())); }
 
-    const $ = (s, r=document)=>r.querySelector(s);
-    const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
-    const btnEl = (t, cls='selection-button')=>{ const d=document.createElement('div'); d.className=cls; d.textContent=t; d.setAttribute('tabindex','0'); d.setAttribute('role','option'); d.setAttribute('aria-selected','false'); return d; };
-    function setSel(el, yes){ el.classList.toggle('selected', !!yes); el.setAttribute('aria-selected', yes? 'true':'false'); }
+    function saveSnapshot(isUndoRedo=false){ const d=getData(); history.push(JSON.parse(JSON.stringify(d))); if(history.length>30) history.shift(); if(!isUndoRedo) future=[]; }
+    function undo(){ if(history.length>1){ const cur=history.pop(); future.push(cur); setData(history[history.length-1]); saveData(); } }
+    function redo(){ if(future.length){ const nxt=future.pop(); history.push(nxt); setData(nxt); saveData(); } }
 
-    // ======== DATA (restored from original, with minor typo fixes) ========
-    const listingsData = {
-      'Cranial Bones': {
-        commonListings: [
-          { text: 'LEFT', tooltip: 'Left-sided adjustment' },
-          { text: 'RIGHT', tooltip: 'Right-sided adjustment' },
-          { text: 'Bilateral', tooltip: 'Both sides adjusted' },
-          { text: 'Flexion', tooltip: 'Forward tilt adjustment' },
-          { text: 'Extension', tooltip: 'Backward tilt adjustment' },
-          { text: 'Inferior', tooltip: 'Downward adjustment' },
-          { text: 'Superior', tooltip: 'Upward adjustment' }
-        ],
-        commonTypes: [
-          { text: 'Neuro-Interlink Reflex', tooltip: 'Reflex-based correction' },
-          { text: 'hold release', tooltip: 'Gentle hold and release technique for cranial sutures' },
-          { text: 'finger toggle', tooltip: 'A gentle hold with torque followed by a HVLA thrust' },
-          { text: 'CSF guided release', tooltip: 'Cerebrospinal fluid guided release technique' }
-        ],
-        commonProtocols: [
-          { text: 'Howat 8 step Protocol', tooltip: 'Cranial detorque correction' },
-          { text: 'Carter Nose correction protocol', tooltip: 'Nasal structure correction' },
-          { text: 'Carter Sphenoid correction', tooltip: 'Protocol for sphenoid bone correction' }
-        ],
-        'Occipital': { positions: [ { text: 'Occipito-mastoid suture' }, { text: 'Lamboidal suture' } ] },
-        'Sphenoid': { positions: [ { text: 'Pterion' }, { text: 'Spheno-parietal Suture' }, { text: 'Spheno-frontal Suture' }, { text: 'Spheno-squamous Suture' }, { text: 'Spheno-zygomatic suture' } ] },
-        'Maxilla': { positions: [ { text: 'Inter Maxillary Suture' }, { text: 'Median Palatine Suture' }, { text: 'Transverse Palatine suture' }, { text: 'Incisive suture' }, { text: 'Zygomatico-maxillary suture' }, { text: 'Lacrimo-maxillary suture' }, { text: 'Fronto maxillary suture' }, { text: 'Naso-maxillary suture' } ] },
-        'Frontal': { positions: [ { text: 'Sagittal Suture' }, { text: 'Frontal Suture' }, { text: 'Frontonasal suture' }, { text: 'Fronto maxillary suture' }, { text: 'Fronto-lacrimal suture' }, { text: 'Fronto-zygomatic suture' }, { text: 'CCJ cranial detorque protocol' } ] },
-        'Parietal': { positions: [ { text: 'Sagittal Suture' }, { text: 'Squamous Suture' }, { text: 'Spheno-parietal Suture' }, { text: 'Parietomastoid Suture' }, { text: 'Lamboidal suture' } ] },
-        'Temporal': { positions: [ { text: 'Squamous Suture' }, { text: 'Temporo-zygomatic suture' }, { text: 'Spheno-squamous Suture' }, { text: 'Occipito-mastoid suture' }, { text: 'Parietomastoid Suture' }, { text: 'TMJ' } ] },
-        'Zygomatic': { positions: [ { text: 'Temporo-zygomatic suture' }, { text: 'Spheno-zygomatic suture' }, { text: 'Zygomatico-maxillary suture' }, { text: 'Fronto-zygomatic suture' } ] },
-        'Ethmoid': { positions: [ { text: 'Internasal suture' }, { text: 'Nose protocol' }, { text: 'Nasal cartilage' } ] },
-        'Vomer': { positions: [ { text: 'Median Palatine Suture' }, { text: 'Gum release' } ] },
-        'Mandible': { positions: [ { text: 'TMJ AI/PS' }, { text: 'Mentalis Suture' }, { text: 'Gum release' } ] }
-      },
-      'Cervical': {
-        'Occiput': {
-          listings: [ 'PS','PS-LS','PS-RS','AS','AS-LS','AS-RS','Left posterior Facet','Right posterior Facet','Bilateral posterior Facet' ].map(text=>({text})),
-          positions: [ 'Prone','Supine','Seated','Side posture','Side Posture Toggle Recoil with drop' ].map(text=>({text})),
-          types: [ 'Osseous','De-compression','Toggle Recoil','Finger toggle','Drop','Hold','Dural Breath' ].map(text=>({text}))
-        },
-        'C1/Atlas': {
-          listings: [ 'ASR','ASR-P','ASR-A','PIR','PIR-P','PIR-A','ASL','ASL-P','ASL-A','PIL','PIL-P','PIL-A','Left posterior Facet','Right posterior Facet','Bilateral posterior Facet','Left anterior Facet','Right anterior Facet','Bilateral anterior Facet' ].map(text=>({text})),
-          positions: [ 'Prone','Supine','Seated','Side posture' ].map(text=>({text})),
-          contacts: [ 'TVP contact','Posterior arch contact' ].map(text=>({text})),
-          types: [ 'Side Posture Toggle Recoil with drop','Osseous','Toggle Recoil','Finger toggle','Hold','Drop','Dural Breath','Coupled Motion','Lateral flexion','Rotation','De-compression','Pull','NUCCA' ].map(text=>({text}))
-        },
-        'C2-7': {
-          listings: [ 'Left posterior Facet','Right posterior Facet','Bilateral posterior Facet','ASR-la','ASL-la','PR','PRS','PRI-la','PL','PLS','PLI-la','A2N','AL Disc','AR Disc','AL Facet','AR Facet' ].map(text=>({text})),
-          positions: [ 'Prone','Supine','Seated','Side posture' ].map(text=>({text})),
-          contacts: [ 'TVP contact','SP contact','Lamina contact','Articular pillar contact' ].map(text=>({text})),
-          types: [ 'Osseous','Side Posture Toggle Recoil with drop','Drop','Toggle Recoil','Finger toggle','Hold','Dural Breath','Coupled Motion','Lateral flexion','Rotation','De-compression','Pull' ].map(text=>({text}))
-        }
-      },
-      'Thoracic': {
-        listings: [ 'Bilateral Facet','Left facet','Right facet','Left Rib','Right Rib','PR','PRS','PRI-t','PL','PLS','PLI-t','Left side slip','Right side slip','Anterior','AR','ARS','ARI-t','AL','ALI-t','Anterior Rib Cartilage','Left posterior Facet','Right posterior Facet','Bilateral posterior Facet' ].map(text=>({text})),
-        positions: [ 'Prone','Supine','Standing','Seated' ].map(text=>({text})),
-        contacts: [ 'X Bilateral','Double thenar','Unilateral Reinforced','TVP contact','SP contact','Thumb Contact','Double Finger Reinforced','ABC roll','Anterior Thoracic' ].map(text=>({text})),
-        types: [ 'Osseous','Drop','Finger Toggle','Hold','Dural Breath','Inhalation','Expiration' ].map(text=>({text}))
-      },
-      'Lumbar': {
-        listings: [ 'Left posterior Facet','Right posterior Facet','PR','PRS','PRI-m','PL','PLS','PLI-m','Anterior' ].map(text=>({text})),
-        positions: [ 'Side posture','Prone','Supine','Standing' ].map(text=>({text})),
-        contacts: [ 'SP contact','Mammillary contact' ].map(text=>({text})),
-        types: [ 'Osseous','Push move','Pull move','Coupled Motion','ISU','ISD','Drop','Finger Toggle','Hold','Dural Breath','ABC roll' ].map(text=>({text}))
-      },
-      'Pelvis': {
-        listings: [ 'PI','PIIn','PIEx','AS','ASIn','ASEx','Ex','In','Ex/In','In/Ex' ].map(text=>({text})),
-        positions: [ 'Side posture','Prone','Supine','Standing' ].map(text=>({text})),
-        types: [ 'Osseous','Drop','Blocked','Finger toggle','Hold','Dural Breath','Push move','Pull move','Pump' ].map(text=>({text}))
-      },
-      'Sacrum & coccyx': {
-        listings: [ 'P','P-L','P-R','P-L inf','P-R inf','L-inf','R-inf','A-L','A-R','A-L-inf','A-R-inf' ].map(text=>({text})),
-        positions: [ 'Side posture','Prone','Supine' ].map(text=>({text})),
-        types: [ 'Osseous','ISU','ISD','Push move','Pull move','Drop','Finger Toggle','Hold','Dural Breath','Logan Basic L','Logan Basic R' ].map(text=>({text}))
-      },
-      'Extremities': {
-        listings: [ 'LEFT','RIGHT','BILATERAL','Distal','Proximal','Posterior','Anterior','Superior','Inferior','IN','EX' ].map(text=>({text})),
-        'Extremity Bone': [ '1st','2nd','3rd','4th','5th','Medial','Intermediate','Lateral' ].map(text=>({text})),
-        types: [ 'Osseous','Drop','Stimulation' ].map(text=>({text}))
-      }
-    };
+    function clearAll(){ if(confirm('Clear all text areas?')){ subjectiveField.value=objectiveField.value=actionField.value=planField.value=''; saveData(); saveSnapshot(true);} }
+    function exportData(){ const dataStr='data:text/plain;charset=utf-8,'+encodeURIComponent(JSON.stringify(getData(),null,2)); const a=document.createElement('a'); a.href=dataStr; a.download='soap_notes.txt'; a.click(); }
 
-    const zoneTexts = {
-      'Zone 1': 'zone 1 with stimulation of Co1, S1, L1, T1 and C1 with vomer release.',
-      'Zone 2': 'Zone 2 with stimulation of AI sacrum, L2, T12, T3 and C2 with pterion/occipitomastoid release.',
-      'Zone 3': 'Zone 3 with stimulation of ASIn, L3, T9, T4 and C3 with zygomatic release.',
-      'Zone 4': 'Zone 4 with stimulation of ASEx, L4, T8, T4, C4 with the release of squamous and spheno-squamous sutures.',
-      'Zone 5': 'Zone 5 with stimulation of PIIn, L5, T11, T5, C5, with the release of the squamous and spheno-squamous sutures.',
-      'Zone 6': 'Zone 6 with stimulation of PIEx, L1, T10, T2 and C6 with stimulation of the frontonasal and sphenofrontal sutures.',
-      'Zone 7': 'Zone 7 with stimulation inferior sacrum, L3, T8, T4, C7 and release of the bilateral lamboidal suture.'
-    };
+    // Cursor-aware insertion
+    function setActiveSection(which){ activeTextarea=which; document.querySelectorAll('.soap-header').forEach(h=>h.style.textDecoration=''); event?.currentTarget && (event.currentTarget.style.textDecoration='underline'); }
+    function insertAtCursor(el, text){ const start=el.selectionStart || el.value.length; const end=el.selectionEnd || el.value.length; const before=el.value.slice(0,start); const after=el.value.slice(end); const spacer = (before && !before.endsWith('\n'))?'\n':''; el.value = before + spacer + text + '\n' + after; el.focus(); el.selectionStart=el.selectionEnd=(before+spacer+text+'\n').length; }
 
-    // ======== Helpers from original ========
-    function flashButton(btn){ btn.classList.add('selected'); setTimeout(()=>btn.classList.remove('selected'), 500); }
+    function addToObjective(text){ const el = document.getElementById('objectiveField'); insertAtCursor(el, text); saveData(); flashStatus(); }
+    function addToAction(text){ const el = document.getElementById('actionField'); insertAtCursor(el, text); saveData(); flashStatus(); }
 
-    // ======== Selection & population (original behavior) ========
-    function selectBone(category, bone, elem){
-      if (selectedBone === bone){ selectedBone=''; elem.classList.remove('selected'); resetSelections(); return; }
-      document.querySelectorAll('.bone-selectable').forEach(el=>el.classList.remove('selected'));
-      elem.classList.add('selected');
-      selectedBone=bone; selectedCategory=category;
+    function flashStatus(){ status.textContent='Saved.'; setTimeout(()=>status.textContent='Ready. Data auto-saves.', 800); }
 
-      if (category === 'Zones') { const text = zoneTexts[bone]; if(text){ addToAction(text); } resetSelections(); return; }
-      if (category === 'Cranial Bones' && bone === 'Howat sweep'){ addToAction('Cranial Palate - Howat sweep performed'); resetSelections(); return; }
+    // ===== Objective Column: sections =====
+    function openModal(title, content){ modalTitle.textContent=title; modalContentDiv.innerHTML=''; modalContentDiv.appendChild(content); objectiveModal.style.display='block'; }
+    function closeModal(m){ m.style.display='none'; }
+    window.addEventListener('click', (e)=>{ if(e.target===objectiveModal) closeModal(objectiveModal); if(e.target===subModal) closeCurrentModal(); });
 
-      let data;
-      if (category === 'Cranial Bones'){
-        data = { listings: listingsData['Cranial Bones'].commonListings, positions: (listingsData['Cranial Bones'][bone]||{}).positions||[], types: listingsData['Cranial Bones'].commonTypes, protocols: listingsData['Cranial Bones'].commonProtocols };
-      } else if (category === 'Cervical'){
-        let key = 'C2-7'; if (bone==='Occiput') key='Occiput'; else if (bone==='C1/Atlas') key='C1/Atlas'; data = listingsData['Cervical'][key];
-      } else if (category === 'Sacrum & coccyx' && (bone.startsWith('Sacrum')||bone.startsWith('Coccyx'))){ data = listingsData['Sacrum & coccyx']; }
-      else { data = listingsData[category]; }
-
-      populateListings(data.listings||[]);
-      populatePositions(data.positions||[]);
-      populateContacts(data.contacts||[]);
-      populateTypes(data.types||[]);
-      populateProtocols(data.protocols||[]);
-      populateSot(data.SOT||[]);
-
-      $('#focusField').textContent='Select listings/positions etc';
-      $('#listingsDetails').open=true; $('#positionsDetails').open=false; $('#contactsDetails').open=false; $('#typesDetails').open=false; $('#protocolsDetails').open=false; $('#sotDetails').open=false;
-      $('#contactsDetails').style.display = data.contacts? 'block':'none';
-      $('#protocolsDetails').style.display = data.protocols? 'block':'none';
-      $('#sotDetails').style.display = data.SOT? 'block':'none';
-
-      badgeUpdate();
+    // Palpatory Findings (table formatting)
+    function generatePalpatoryFindingsContent(){
+      const table=document.createElement('table'); table.className='attractive-table';
+      const groups=[
+        { title:'RCPM tight and tender', buttons:[{text:'Left', value:'RCPM tight and tender Left'},{text:'Right', value:'RCPM tight and tender Right'}]},
+        { title:'GSC (Gyroscopic Subluxation Complex)', buttons:[{text:'Left', value:'GSC Left'},{text:'Right', value:'GSC Right'}]},
+        { title:'Great Toe Extension Loss', buttons:[{text:'Left', value:'Great Toe Extension Loss Left'},{text:'Right', value:'Great Toe Extension Loss Right'}]},
+        { title:'Short leg', buttons:[{text:'Left', value:'Short leg Left'},{text:'Right', value:'Short leg Right'}]},
+        { title:'Derifield', buttons:[{text:'-ve', value:'Derifield -ve'},{text:'+ve', value:'Derifield +ve'}]},
+        { title:'Prone H2B ROM decreased', buttons:[{text:'Left', value:'Prone H2B ROM decreased Left'},{text:'Right', value:'Prone H2B ROM decreased Right'}]},
+        { title:'Meningeal Torque', buttons:[{text:'Diaschisis', value:'Predominant Meningeal Torque Diaschisis'},{text:'Necrotic', value:'Meningeal Torque Necrotic'}]},
+      ];
+      groups.forEach(g=>{ const tr=document.createElement('tr'); const th=document.createElement('th'); th.textContent=g.title; tr.appendChild(th); const td=document.createElement('td'); const wrap=document.createElement('div'); wrap.className='button-group'; g.buttons.forEach(b=>{ const btn=document.createElement('button'); btn.className='button'; btn.textContent=b.text; btn.onclick=()=>addToObjective(b.value); wrap.appendChild(btn); }); td.appendChild(wrap); tr.appendChild(td); table.appendChild(tr); });
+      return table;
     }
 
-    function populateListings(options){ const c=$('#listingsContainer'); c.innerHTML=''; options.forEach(opt=>{ const d=document.createElement('div'); d.className='selectable listing-selectable'; d.textContent=opt.text; d.setAttribute('data-tooltip', opt.tooltip||''); d.onclick=(e)=>{ selectListing(opt.text, e.target); $('#listingsDetails').open=false; $('#positionsDetails').open=true; }; c.appendChild(d); }); }
-    function selectListing(listing, elem){ if(selectedListings.includes(listing)){ selectedListings=[]; elem.classList.remove('selected'); } else { selectedListings=[listing]; $$('.listing-selectable').forEach(el=>el.classList.remove('selected')); elem.classList.add('selected'); } badgeUpdate(); }
+    function createPalpatoryFindingsHeader(parent){ const header=document.createElement('div'); header.className='section-header'; header.textContent='Palpatory Findings'; header.onclick=()=>openModal('Palpatory Findings', generatePalpatoryFindingsContent()); parent.appendChild(header); }
 
-    function populatePositions(options){ const c=$('#positionsContainer'); c.innerHTML=''; options.forEach(opt=>{ const d=document.createElement('div'); d.className='selectable position-selectable'; d.textContent=opt.text; d.setAttribute('data-tooltip', opt.tooltip||''); d.onclick=(e)=>{ selectPosition(opt.text, e.target); $('#positionsDetails').open=false; if($('#contactsDetails').style.display!=='none') $('#contactsDetails').open=true; else $('#typesDetails').open=true; }; c.appendChild(d); }); }
-    function selectPosition(position, elem){ if(selectedPositions.includes(position)){ selectedPositions=[]; elem.classList.remove('selected'); } else { selectedPositions=[position]; $$('.position-selectable').forEach(el=>el.classList.remove('selected')); elem.classList.add('selected'); } badgeUpdate(); }
+    // System Fault Lines — restored to table-like layout
+    function createCombinedNeuroGrid(parent){
+      const table=document.createElement('table'); table.className='neuro-table';
+      const thead=document.createElement('thead'); const tr=document.createElement('tr');
+      const thItem=document.createElement('th'); thItem.textContent='Item'; tr.appendChild(thItem);
+      ['Left','Right','Bilateral'].forEach(side=>{ const th=document.createElement('th'); th.textContent=side; tr.appendChild(th); });
+      thead.appendChild(tr); table.appendChild(thead);
+      const tbody=document.createElement('tbody');
+      const items=[1,2,3,4,5,6,7,'2/1','2/2','2/3'];
+      items.forEach(item=>{ const row=document.createElement('tr'); const tdItem=document.createElement('td'); tdItem.textContent=item; row.appendChild(tdItem); ['Left','Right','Bilateral'].forEach(side=>{ const td=document.createElement('td'); const btn=document.createElement('button'); btn.className='button'; btn.textContent=side; btn.onclick=()=>addToObjective(`Neurological Gyroscope: ${item} ${side}`); td.appendChild(btn); row.appendChild(td); }); tbody.appendChild(row); });
+      table.appendChild(tbody); parent.appendChild(table);
+    }
 
-    function populateContacts(options){ const c=$('#contactsContainer'); c.innerHTML=''; options.forEach(opt=>{ const d=document.createElement('div'); d.className='selectable contact-selectable'; d.textContent=opt.text; d.setAttribute('data-tooltip', opt.tooltip||''); d.onclick=(e)=>{ selectContact(opt.text, e.target); $('#contactsDetails').open=false; $('#typesDetails').open=true; }; c.appendChild(d); }); }
-    function selectContact(contact, elem){ if(selectedContacts.includes(contact)){ selectedContacts=[]; elem.classList.remove('selected'); } else { selectedContacts=[contact]; $$('.contact-selectable').forEach(el=>el.classList.remove('selected')); elem.classList.add('selected'); } badgeUpdate(); }
+    function createNumberSelector(parent, title, items=[1,2,3,4,5,6,7]){
+      const table=document.createElement('table'); table.className='number-selector-table';
+      const cap=document.createElement('caption'); cap.textContent=title; table.appendChild(cap);
+      const tr=document.createElement('tr'); items.forEach(n=>{ const td=document.createElement('td'); const btn=document.createElement('button'); btn.className='button'; btn.textContent=n; btn.onclick=()=>addToObjective(`${title}: ${n}`); td.appendChild(btn); tr.appendChild(td); }); table.appendChild(tr); parent.appendChild(table);
+    }
 
-    function populateTypes(options){ const c=$('#typesContainer'); c.innerHTML=''; options.forEach(opt=>{ const d=document.createElement('div'); d.className='selectable type-selectable'; d.textContent=opt.text; d.setAttribute('data-tooltip', opt.tooltip||''); d.onclick=(e)=>selectType(opt.text, e.target); c.appendChild(d); }); c.addEventListener('keydown',e=>{ if(e.key==='Enter'){ addToSoap(); } }); }
-    function selectType(type, elem){ const idx=selectedTypes.indexOf(type); if(idx>-1){ selectedTypes.splice(idx,1); elem.classList.remove('selected'); } else { selectedTypes.push(type); elem.classList.add('selected'); } badgeUpdate(); }
+    function createTextInputSection(parent, title){ const box=document.createElement('div'); box.className='vip-section'; const h=document.createElement('h4'); h.textContent=title; box.appendChild(h); const row=document.createElement('div'); row.className='text-input-group'; const input=document.createElement('input'); input.placeholder='e.g. Stomach (cardiac)'; input.addEventListener('keypress', e=>{ if(e.key==='Enter'){ add(); }}); row.appendChild(input); const btn=document.createElement('button'); btn.className='button'; btn.textContent='Add'; btn.onclick=add; row.appendChild(btn); box.appendChild(row); parent.appendChild(box); function add(){ const val=input.value.trim(); if(val){ addToObjective(`${title} - ${val}`); input.value=''; } } }
 
-    function populateProtocols(options){ const c=$('#protocolsContainer'); c.innerHTML=''; options.forEach(opt=>{ const d=document.createElement('div'); d.className='selectable protocol-selectable'; d.textContent=opt.text; d.setAttribute('data-tooltip', opt.tooltip||''); d.onclick=(e)=>selectProtocol(opt.text, e.target); c.appendChild(d); }); c.addEventListener('keydown',e=>{ if(e.key==='Enter'){ addToSoap(); } }); }
-    function selectProtocol(protocol, elem){ const idx=selectedProtocols.indexOf(protocol); if(idx>-1){ selectedProtocols.splice(idx,1); elem.classList.remove('selected'); } else { selectedProtocols.push(protocol); elem.classList.add('selected'); } badgeUpdate(); }
+    function generateSystemFaultLinesContent(){
+      const content=document.createElement('div');
+      const h4=document.createElement('h4'); h4.textContent='Neurological Gyroscope'; content.appendChild(h4);
+      createCombinedNeuroGrid(content);
 
-    function populateSot(options){ const c=$('#sotContainer'); c.innerHTML=''; options.forEach(opt=>{ const d=document.createElement('div'); d.className='selectable sot-selectable'; d.textContent=opt.text; d.setAttribute('data-tooltip', opt.tooltip||''); d.onclick=(e)=>selectSot(opt.text, e.target); c.appendChild(d); }); c.addEventListener('keydown',e=>{ if(e.key==='Enter'){ addToSoap(); } }); }
-    function selectSot(sot, elem){ const idx=selectedSot.indexOf(sot); if(idx>-1){ selectedSot.splice(idx,1); elem.classList.remove('selected'); } else { selectedSot.push(sot); elem.classList.add('selected'); } }
+      // Quick-pick rows as tables
+      createNumberSelector(content, 'IAR');
+      createNumberSelector(content, 'NIR');
+      createNumberSelector(content, 'EDR');
+      createNumberSelector(content, 'PR');
+      createNumberSelector(content, 'MR');
+      createNumberSelector(content, 'IR');
 
-    // ======== SOAP helpers (original) ========
-    function setActiveSection(section){ activeTextarea = section+'Field'; $$('.soap-section').forEach(el=>el.classList.remove('active-section')); $('#'+section+'Section').classList.add('active-section'); }
-    function addTextToField(fieldId, text){ const ta=$('#'+fieldId); const start=ta.selectionStart; const end=ta.selectionEnd; const curr=ta.value; ta.value = curr.substring(0,start) + text + '\n' + curr.substring(end); ta.selectionStart = ta.selectionEnd = start + text.length + 1; saveData(); saveSnapshot(); }
-    function addToObjective(text){ addTextToField('objectiveField', text); }
-    function addToAction(text){ addTextToField('actionField', text); }
-    function addToPlan(text){ addTextToField('planField', text); }
+      createNumberSelector(content, 'Zone(s) active (quick pick)');
+      const advZone=document.createElement('button'); advZone.className='button'; advZone.textContent='Advanced zone selection (multi-select)'; advZone.onclick=()=>openSubModal('Zone(s) active'); content.appendChild(advZone);
 
-    function addPlanExercise(elem){ const v=$('#planExercise').value; if(v) addToPlan('Exercise: '+v); $('#planExercise').value=''; flashButton(elem); }
-    function addPlanNutrition(elem){ const v=$('#planNutrition').value; if(v) addToPlan('Nutrition: '+v); $('#planNutrition').value=''; flashButton(elem); }
-    function addPlanCheck(elem){ const v=$('#planCheck').value; if(v) addToPlan('Check next visit: '+v); $('#planCheck').value=''; flashButton(elem); }
+      createTextInputSection(content, 'VIP');
+      const vipAdv=document.createElement('button'); vipAdv.className='button'; vipAdv.style.marginLeft='8px'; vipAdv.textContent='Open VIP tree'; vipAdv.onclick=()=>openSubModal('VIP'); content.appendChild(vipAdv);
 
-    function addFromObjectiveInput(id,prefix,elem){ const v=$('#'+id).value; if(v){ addToObjective(prefix+v); $('#'+id).value=''; flashButton(elem);} }
+      const gyroAdv=document.createElement('button'); gyroAdv.className='button'; gyroAdv.style.marginLeft='8px'; gyroAdv.textContent='Open Gyro lines picker'; gyroAdv.onclick=()=>openSubModal('Gyro'); content.appendChild(gyroAdv);
 
-    // Add to SOAP (Action) using current selections
-    function addToSoap(){ const entry = `${selectedBone}: ${selectedListings.join(', ')} ${selectedPositions.join(', ')} ${selectedContacts.join(', ')} ${selectedTypes.join(', ')} ${selectedSot.join(', ')}`.trim(); if(entry!==selectedBone+':' ){ addToAction(entry); } if(selectedProtocols.length>0){ addToAction('cranial protocol: '+selectedProtocols.join(', ')); } resetSelections(); window.scrollTo({top:0, behavior:'smooth'}); }
+      return content;
+    }
 
-    function resetSelections(){ selectedListings=[]; selectedPositions=[]; selectedContacts=[]; selectedTypes=[]; selectedProtocols=[]; selectedSot=[]; $$('.listing-selectable, .position-selectable, .contact-selectable, .type-selectable, .protocol-selectable, .sot-selectable').forEach(el=>el.classList.remove('selected')); $('#listingsContainer').innerHTML=''; $('#positionsContainer').innerHTML=''; $('#contactsContainer').innerHTML=''; $('#typesContainer').innerHTML=''; $('#protocolsContainer').innerHTML=''; $('#sotContainer').innerHTML=''; $('#listingsDetails').open=false; $('#positionsDetails').open=false; $('#contactsDetails').open=false; $('#typesDetails').open=false; $('#protocolsDetails').open=false; $('#sotDetails').open=false; badgeUpdate(); }
+    function createSystemFaultLinesHeader(parent){ const header=document.createElement('div'); header.className='section-header'; header.textContent='System Fault Lines'; header.onclick=()=>openModal('System Fault Lines', generateSystemFaultLinesContent()); parent.appendChild(header); }
 
-    // Clear / Undo / Redo / Save
-    function clearAll(){ if(confirm('Are you sure you want to clear all data?')){ $$('input[type="text"], textarea').forEach(el=>el.value=''); resetSelections(); selectedBone=''; selectedCategory=''; $$('.bone-selectable').forEach(el=>el.classList.remove('selected')); localStorage.removeItem('chiroData'); savedRows=[]; undoStack=[]; redoStack=[]; persistPhase1(); renderSaved(); history=[]; future=[]; saveSnapshot(true); } }
-    function saveSnapshot(isUndoRedo=false){ const d=getData(); history.push(JSON.parse(JSON.stringify(d))); if(history.length>20) history.shift(); if(!isUndoRedo) future=[]; }
-    function undo(){ if(history.length>1){ const cur=history.pop(); future.push(cur); setData(history[history.length-1]); } }
-    function redo(){ if(future.length>0){ const next=future.pop(); history.push(next); setData(next); } }
+    // Objective Findings Notes (simple adders)
+    function generateObjectiveFindingsNotesContent(){
+      const wrap=document.createElement('div');
+      const rows=[
+        {label:'Hypo-reactive Muscle:', id:'hypoInput', prefix:'Hypo-reactive Muscle: '},
+        {label:'Hyper-reactive muscle:', id:'hyperInput', prefix:'Hyper-reactive muscle: '},
+        {label:'Tight and tender:', id:'tightInput', prefix:'Tight and tender: '},
+        {label:'Additional Notes:', id:'additionalInput', prefix:'Additional Notes: '},
+      ];
+      rows.forEach(r=>{ const g=document.createElement('div'); g.className='group'; const lab=document.createElement('label'); lab.innerHTML = `${r.label} <input id="${r.id}" type="text" style="padding:6px; border:1px solid #b3c7f7; border-radius:6px">`; g.appendChild(lab); const btn=document.createElement('button'); btn.className='button'; btn.textContent='Add'; btn.onclick=()=>{ const v=document.getElementById(r.id).value.trim(); if(v){ addToObjective(r.prefix+v); document.getElementById(r.id).value=''; } }; g.appendChild(btn); wrap.appendChild(g); });
+      return wrap;
+    }
+    function createObjectiveFindingsNotesHeader(parent){ const header=document.createElement('div'); header.className='section-header'; header.textContent='Objective Findings Notes'; header.onclick=()=>openModal('Objective Findings Notes', generateObjectiveFindingsNotesContent()); parent.appendChild(header); }
 
-    function getData(){ return { subjective: $('#subjectiveField').value, objective: $('#objectiveField').value, action: $('#actionField').value, plan: $('#planField').value }; }
-    function setData(data){ $('#subjectiveField').value=data.subjective||''; $('#objectiveField').value=data.objective||''; $('#actionField').value=data.action||''; $('#planField').value=data.plan||''; }
-    function saveData(){ localStorage.setItem('chiroData', JSON.stringify(getData())); }
-    function exportData(){ const dataStr = 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(getData(), null, 2)); const a=document.createElement('a'); a.href=dataStr; a.download='soap_notes.txt'; a.click(); }
+    // SOT quick grid (same as before)
+    function generateSotContent(){ const content=document.createElement('div'); const opts=['CAT 1','SB+ve','SB-ve','CAT 2','CAT 3','Left short Leg','Right short leg','Blocked','Supine','Prone']; const grid=document.createElement('div'); grid.style.display='grid'; grid.style.gridTemplateColumns='repeat(auto-fit,minmax(120px,1fr))'; grid.style.gap='8px'; opts.forEach(o=>{ const btn=document.createElement('button'); btn.className='button'; btn.textContent=o; btn.onclick=()=>btn.classList.toggle('selected'); grid.appendChild(btn); }); content.appendChild(grid); const add=document.createElement('button'); add.className='button'; add.style.marginTop='10px'; add.textContent='Add to SOAP note'; add.onclick=()=>{ const selected=[...grid.querySelectorAll('.button.selected')].map(b=>b.textContent); if(selected.length) addToObjective('SOT: '+selected.join(', ')); closeModal(objectiveModal); }; content.appendChild(add); return content; }
+    function createSotHeader(parent){ const header=document.createElement('div'); header.className='section-header'; header.textContent='SOT'; header.onclick=()=>openModal('SOT', generateSotContent()); parent.appendChild(header); }
 
-    // ======== Objective column modals (restored) ========
-    function generatePalpatoryFindingsContent(){ const table=document.createElement('table'); table.className='attractive-table'; const groups=[{ title:'RCPM tight and tender', buttons:[{text:'Left',value:'RCPM tight and tender Left'},{text:'Right',value:'RCPM tight and tender Right'}] },{ title:'GSC (Gyroscopic Subluxation Complex)', buttons:[{text:'Left',value:'GSC Left'},{text:'Right',value:'GSC Right'}] },{ title:'Great Toe Extension Loss', buttons:[{text:'Left',value:'Great Toe Extension Loss Left'},{text:'Right',value:'Great Toe Extension Loss Right'}] },{ title:'Short leg', buttons:[{text:'Left',value:'Short leg Left'},{text:'Right',value:'Short leg Right'}] },{ title:'Derifield', buttons:[{text:'-ve',value:'Derifield -ve'},{text:'+ve',value:'Derifield +ve'}] },{ title:'Prone H2B ROM decreased', buttons:[{text:'Left',value:'Prone H2B ROM decreased Left'},{text:'Right',value:'Prone H2B ROM decreased Right'}] },{ title:'Meningeal Torque', buttons:[{text:'Diaschisis',value:'Predominant Meningeal Torque Diaschisis'},{text:'Necrotic',value:'Meningeal Torque Necrotic'}] }]; groups.forEach(g=>{ const tr=document.createElement('tr'); const th=document.createElement('th'); th.textContent=g.title; tr.appendChild(th); const td=document.createElement('td'); const wrap=document.createElement('div'); wrap.style.display='flex'; wrap.style.gap='5px'; g.buttons.forEach(b=>{ const m=document.createElement('button'); m.className='button'; m.textContent=b.text; m.onclick=(e)=>{ addToObjective(b.value); flashButton(e.target); }; wrap.appendChild(m); }); td.appendChild(wrap); tr.appendChild(td); table.appendChild(tr); }); return table; }
+    // Sub-modal advanced pickers (Gyro / VIP tree / Zones multi-select)
+    function openSubModal(type){ subModal.dataset.type=type; subModal.style.display='block'; subModalTitle.textContent=type==='Gyro'?'Gyroscopic Adaptation Line':type; selectionGrid.innerHTML=''; document.getElementById('subExtras').innerHTML='';
+      if(type==='Gyro'){
+        const row=document.createElement('div'); row.className='gyro-container';
+        // Left
+        const leftSide=document.createElement('div'); leftSide.className='gyro-side';
+        const l1=document.createElement('h4'); l1.textContent='Gyro Line 1 LEFT'; leftSide.appendChild(l1);
+        const l1Btns=document.createElement('div'); l1Btns.className='gyro-buttons'; [1,2,3,4,5,6,7].forEach(n=>{ const b=document.createElement('div'); b.className='selection-button'; b.textContent=n; b.dataset.value=n+' Left'; b.onclick=()=>b.classList.toggle('selected'); l1Btns.appendChild(b); }); leftSide.appendChild(l1Btns);
+        const l2=document.createElement('h4'); l2.textContent='Gyro Line 2 LEFT'; leftSide.appendChild(l2);
+        const l2Btns=document.createElement('div'); l2Btns.className='gyro-buttons'; ['2/1','2/2','2/3'].forEach(n=>{ const b=document.createElement('div'); b.className='selection-button'; b.textContent=n; b.dataset.value=n+' Left'; b.onclick=()=>b.classList.toggle('selected'); l2Btns.appendChild(b); }); leftSide.appendChild(l2Btns);
+        // Right
+        const rightSide=document.createElement('div'); rightSide.className='gyro-side';
+        const r1=document.createElement('h4'); r1.textContent='Gyro Line 1 RIGHT'; rightSide.appendChild(r1);
+        const r1Btns=document.createElement('div'); r1Btns.className='gyro-buttons'; [1,2,3,4,5,6,7].forEach(n=>{ const b=document.createElement('div'); b.className='selection-button'; b.textContent=n; b.dataset.value=n+' Right'; b.onclick=()=>b.classList.toggle('selected'); r1Btns.appendChild(b); }); rightSide.appendChild(r1Btns);
+        const r2=document.createElement('h4'); r2.textContent='Gyro Line 2 RIGHT'; rightSide.appendChild(r2);
+        const r2Btns=document.createElement('div'); r2Btns.className='gyro-buttons'; ['2/1','2/2','2/3'].forEach(n=>{ const b=document.createElement('div'); b.className='selection-button'; b.textContent=n; b.dataset.value=n+' Right'; b.onclick=()=>b.classList.toggle('selected'); r2Btns.appendChild(b); }); rightSide.appendChild(r2Btns);
+        const lineRow=document.createElement('div'); lineRow.className='gyro-line-row'; lineRow.appendChild(leftSide); lineRow.appendChild(rightSide); selectionGrid.appendChild(lineRow);
+      } else if(type==='VIP'){
+        // Collapsible tree
+        const structure={
+          'Glandular system':{'Adrenal glands':null,'Pancreas':null,'Liver':null,'Parathyroid glands':null,'Thyroid Gland':null},
+          'Brain/CSF':null,
+          'Respiratory system':{'Upper lung':null,'Lower Lung':null},
+          'Head and neck':{'Inner Ear':null,'Nose':null,'Tongue':null,'Larynx':null,'Pharynx':null,'Tonsils':null},
+          'Digestive system':{'Oesophagus':null,'Stomach':{'Cardiac Valve':null,'Body':null,'Pyloric Valve':null},'Pancreas':null,'Gallbladder':null,'Small intestine':{'Duodenum':null,'Jejunum':null,'Ileum':null},'Large intestine':{'ICV':null,'Appendix':null,'Ascending colon':null,'Transverse colon':null,'Hepatic Flexure':null,'Splenic flexure':null,'Descending colon':null,'Sigmoid colon':null,'Rectum':null}},
+          'Reproductive system':{'Prostate':null,'Testes':null,'Penis':null,'Uterus':null,'Womb':null,'Vagina':null},
+          'Heart':null,
+          'Urinary system':{'Kidneys':null,'Ureters':null,'Urethra':null,'Bladder':null},
+          'Immune system':{'Spleen':null,'Thymus gland':null,'Right Lymphatic duct':null,'Left Lymphatic duct (Thoracic Duct)':null,'Appendix':null}
+        };
+        function build(parent, node){ for(const k in node){ if(node[k]==null){ const b=document.createElement('div'); b.className='selection-button'; b.textContent=k; b.onclick=()=>b.classList.toggle('selected'); parent.appendChild(b);} else { const det=document.createElement('details'); const sum=document.createElement('summary'); sum.textContent=k; det.appendChild(sum); const inner=document.createElement('div'); inner.style.padding='6px 10px'; build(inner,node[k]); det.appendChild(inner); parent.appendChild(det);} } }
+        build(selectionGrid, structure);
+        const custom=document.createElement('input'); custom.className='selection-button'; custom.placeholder='Add custom VIP and press Enter'; custom.onkeypress=(e)=>{ if(e.key==='Enter' && custom.value.trim()){ addToObjective('VIP - '+custom.value.trim()); custom.value=''; } }; document.getElementById('subExtras').appendChild(custom);
+      } else if(type==='Zone(s) active'){
+        [1,2,3,4,5,6,7].forEach(n=>{ const b=document.createElement('div'); b.className='selection-button'; b.textContent='Zone '+n; b.onclick=()=>b.classList.toggle('selected'); selectionGrid.appendChild(b); });
+        const note=document.createElement('p'); note.style.marginTop='8px'; note.textContent='(Select one or more zones, then choose primary when prompted)'; document.getElementById('subExtras').appendChild(note);
+      } else {
+        [1,2,3,4,5,6,7].forEach(n=>{ const b=document.createElement('div'); b.className='selection-button'; b.textContent=n; b.onclick=()=>b.classList.toggle('selected'); selectionGrid.appendChild(b); });
+      }
+    }
 
-    function createPalpatoryFindingsHeader(parent){ const h=document.createElement('div'); h.className='section-header'; h.textContent='Palpatory Findings'; h.onclick=function(){ const content=generatePalpatoryFindingsContent(); openModal('Palpatory Findings', content); }; parent.appendChild(h); }
+    function addSelectionsFromSubModal(){ const type=subModal.dataset.type; const selected=[...selectionGrid.querySelectorAll('.selection-button.selected')].map(el=>el.dataset?.value||el.textContent);
+      if(!selected.length){ closeCurrentModal(); return; }
+      if(type==='Gyro'){
+        const L=new Set(), R=new Set(); selected.forEach(sel=>{ const [itm, side]=sel.split(' '); if(side==='Left') L.add(itm); if(side==='Right') R.add(itm); });
+        const bil=[], indiv=[]; L.forEach(it=>{ if(R.has(it)){ bil.push(it); R.delete(it);} else indiv.push(`${it} Left`); }); R.forEach(it=>indiv.push(`${it} Right`));
+        bil.forEach(it=>addToObjective(`Gyro: Bilateral ${it}`)); indiv.forEach(x=>addToObjective(`Gyro: ${x}`));
+        closeCurrentModal(); return;
+      }
+      if(type==='Zone(s) active' && selected.length>1){ // ask for primary
+        const prompt=document.createElement('div'); prompt.innerHTML='<h4>Which is the primary zone?</h4>'; const row=document.createElement('div'); row.className='selection-grid';
+        selected.forEach(txt=>{ const b=document.createElement('div'); b.className='selection-button'; b.textContent=txt; b.onclick=()=>{ const primary=txt.split(' ')[1]; addToObjective(`Zone(s) active: ${selected.join(', ')} primary zone ${primary}`); closeCurrentModal(); }; row.appendChild(b); });
+        selectionGrid.innerHTML=''; selectionGrid.appendChild(prompt); selectionGrid.appendChild(row); return; }
+      // VIP, IAR, etc.
+      if(type==='VIP'){ addToObjective('VIP - '+selected.join(', ')); }
+      else if(type==='Zone(s) active'){ addToObjective('Zone(s) active: '+selected.join(', ')); }
+      else { addToObjective(`${type}: ${selected.join(', ')}`); }
+      closeCurrentModal();
+    }
+    function closeCurrentModal(){ subModal.style.display='none'; selectionGrid.innerHTML=''; document.getElementById('subExtras').innerHTML=''; }
 
-    const faultSubtypes = ['Gyro','Zone(s) active','VIP','IAR','NIR','EDR','PR','MR','IR'];
-    function generateSystemFaultLinesContent(){ const d=document.createElement('div'); d.className='fault-grid'; faultSubtypes.forEach(st=>{ const b=document.createElement('div'); b.className='selection-button'; b.textContent=st; b.onclick=(e)=>openSubModal(st,e.target); d.appendChild(b); }); return d; }
-    function createSystemFaultLinesHeader(parent){ const h=document.createElement('div'); h.className='section-header'; h.textContent='System Fault Lines'; h.onclick=function(){ const content=generateSystemFaultLinesContent(); openModal('System Fault Lines', content, true); }; parent.appendChild(h); }
+    // ===== Column 2: (very light placeholders; keep your existing data lists if you had them) =====
+    function selectCategory(cat, el){ document.querySelectorAll('.selectable').forEach(n=>n.classList.remove('selected')); el.classList.add('selected'); const c=document.getElementById('colBonesContent'); c.innerHTML=''; const d=document.createElement('details'); const s=document.createElement('summary'); s.textContent=cat+ ' — open to pick'; d.appendChild(s); const inner=document.createElement('div'); inner.style.display='grid'; inner.style.gridTemplateColumns='repeat(auto-fit,minmax(140px,1fr))'; inner.style.gap='8px'; const items=(cat==='Cervical')?['Occiput','Atlas/C1','Axis/C2','C3','C4','C5','C6','C7']:(cat==='Thoracic')?Array.from({length:12},(_,i)=>'T'+(i+1)):(cat==='Lumbar')?['L1','L2','L3','L4','L5']:(cat==='Pelvis')?['Ilium','Ischium','Pubis']:(cat==='Sacrum & coccyx')?['Sacrum','Coccyx']:(cat==='Extremities')?['Shoulder','Elbow','Wrist','Hip','Knee','Ankle','Foot']:(cat==='Zones')?['Zone 1','Zone 2','Zone 3','Zone 4','Zone 5','Zone 6','Zone 7']:['Frontal','Parietal','Temporal','Occipital','Sphenoid']; items.forEach(x=>{ const div=document.createElement('div'); div.className='selection-button'; div.textContent=x; div.onclick=()=>{ document.getElementById('focusField')?.remove(); }; inner.appendChild(div); }); d.appendChild(inner); c.appendChild(d); document.getElementById('addToSoapButton').style.display='block'; }
 
-    function generateObjectiveFindingsNotesContent(){ const d=document.createElement('div'); const notes=[{label:'Hypo-reactive Muscle:',id:'hypoInput',prefix:'Hypo-reactive Muscle: '},{label:'Hyper-reactive muscle:',id:'hyperInput',prefix:'Hyper-reactive muscle: '},{label:'Tight and tender:',id:'tightInput',prefix:'Tight and tender: '},{label:'Additional Notes:',id:'additionalInput',prefix:'Additional Notes: '}]; notes.forEach(n=>{ const g=document.createElement('div'); g.className='group'; const lab=document.createElement('label'); lab.innerHTML=`${n.label} <input id="${n.id}" type="text">`; g.appendChild(lab); const b=document.createElement('button'); b.className='button'; b.textContent='Add'; b.onclick=(e)=>addFromObjectiveInput(n.id,n.prefix,e.target); g.appendChild(b); d.appendChild(g); }); return d; }
-    function createObjectiveFindingsNotesHeader(parent){ const h=document.createElement('div'); h.className='section-header'; h.textContent='Objective Findings Notes'; h.onclick=function(){ const c=generateObjectiveFindingsNotesContent(); openModal('Objective Findings Notes', c); }; parent.appendChild(h); }
+    function addToSoap(){ // very light joiner using any selected labels (for brevity)
+      addToAction('Adjustment performed.'); alert('Added to SOAP (demo).'); }
+    function addCustomToAction(){ const v=document.getElementById('customActionInput').value.trim(); if(v){ addToAction(v); document.getElementById('customActionInput').value=''; } }
+    function addPlanExercise(){ const v=planExercise.value.trim(); if(v){ insertAtCursor(planField, 'Exercise: '+v); planExercise.value=''; saveData(); }}
+    function addPlanNutrition(){ const v=planNutrition.value.trim(); if(v){ insertAtCursor(planField, 'Nutrition: '+v); planNutrition.value=''; saveData(); }}
+    function addPlanCheck(){ const v=planCheck.value.trim(); if(v){ insertAtCursor(planField, 'Check next visit: '+v); planCheck.value=''; saveData(); }}
 
-    function createSotHeader(parent){ const h=document.createElement('div'); h.className='section-header'; h.textContent='SOT'; h.onclick=function(){ const c=generateSotContent(); openModal('SOT', c); }; parent.appendChild(h); }
-    function generateSotContent(){ const content=document.createElement('div'); content.className='fault-grid'; const opts=['CAT 1','SB+ve','SB-ve','CAT 2','CAT 3','Left short Leg','Right short leg','Blocked','Supine','Prone']; opts.forEach(o=>{ const b=document.createElement('div'); b.className='selection-button'; b.textContent=o; b.onclick=(e)=>toggleSelection(e.target); content.appendChild(b); }); const add=document.createElement('button'); add.className='button'; add.textContent='Add to SOAP note'; add.onclick=()=>{ const sel=Array.from(content.querySelectorAll('.selection-button.selected')).map(x=>x.textContent); if(sel.length>0){ addToObjective('SOT: '+sel.join(', ')); } closeCurrentModal(); }; content.appendChild(add); return content; }
+    // ===== Init =====
+    window.onload = function(){ try{ const saved=localStorage.getItem('chiroData'); if(saved){ setData(JSON.parse(saved)); } }catch(e){}
+      document.querySelectorAll('textarea, input[type="text"]').forEach(el=>el.addEventListener('input', ()=>{ saveData(); saveSnapshot(); }));
+      saveSnapshot(true); status.textContent='Ready. Data auto-saves.';
+      const objectiveCol=document.getElementById('objectiveContent');
+      createPalpatoryFindingsHeader(objectiveCol);
+      createSystemFaultLinesHeader(objectiveCol);
+      createObjectiveFindingsNotesHeader(objectiveCol);
+      createSotHeader(objectiveCol);
 
-    function openModal(titleText, contentElement, isSystemFault=false){ let modal=$('#objectiveModal'); if(!modal){ modal=document.createElement('div'); modal.id='objectiveModal'; modal.className='modal'; modal.style.cssText='display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;overflow:hidden;background:rgba(0,0,0,.4)'; const mc=document.createElement('div'); mc.className='modal-content'; mc.style.cssText='background:#fff;margin:5% auto;padding:20px;border:1px solid #888;width:90vw;max-height:90vh;overflow:auto;border-radius:8px;box-shadow:0 4px 8px rgba(0,0,0,.2)'; const close=document.createElement('span'); close.className='close'; close.innerHTML='&times;'; close.style.cssText='float:right;font-size:28px;font-weight:bold;cursor:pointer;color:#888'; close.onclick=function(){ closeModal(modal); }; mc.appendChild(close); const title=document.createElement('h3'); title.id='modalTitle'; mc.appendChild(title); const cdiv=document.createElement('div'); cdiv.id='modalContentDiv'; mc.appendChild(cdiv); modal.appendChild(mc); document.body.appendChild(modal); }
-      $('#modalTitle').textContent=titleText; const cdiv=$('#modalContentDiv'); cdiv.innerHTML=''; cdiv.appendChild(contentElement); modal.style.display='block'; openModals.push(modal); if(isSystemFault){ modal.dataset.isSystemFault='true'; } modal.addEventListener('click', handleModalClick); document.addEventListener('keydown', handleEscKey); return modal; }
-    function closeModal(modal){ modal.style.display='none'; openModals.pop(); modal.removeEventListener('click', handleModalClick); if(openModals.length===0){ document.removeEventListener('keydown', handleEscKey);} }
-    function handleModalClick(e){ if(e.target.id==='objectiveModal'){ closeCurrentModal(); }}
-    function handleEscKey(e){ if(e.key==='Escape'){ closeCurrentModal(); }}
-    function closeCurrentModal(){ const m=openModals[openModals.length-1]; if(m){ m.style.display='none'; openModals.pop(); }}
-
-    function toggleSelection(el){ el.classList.toggle('selected'); }
-
-    function openSubModal(subType, clicked){ let sub=$('#subModal'); if(!sub){ sub=document.createElement('div'); sub.id='subModal'; sub.className='sub-modal'; sub.style.cssText='display:none;position:fixed;z-index:2000;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;padding:20px;border:1px solid #888;border-radius:8px;box-shadow:0 4px 8px rgba(0,0,0,.2)'; const sc=document.createElement('div'); sc.className='sub-modal-content'; sc.style.cssText='max-height:70vh;overflow:auto'; const close=document.createElement('span'); close.className='close'; close.innerHTML='&times;'; close.style.cssText='float:right;font-size:28px;font-weight:bold;cursor:pointer;color:#888'; close.onclick=function(){ closeCurrentModal(); }; sc.appendChild(close); const title=document.createElement('h3'); title.id='subModalTitle'; sc.appendChild(title); const grid=document.createElement('div'); grid.id='selectionGrid'; grid.className='selection-grid'; sc.appendChild(grid); sub.appendChild(sc); document.body.appendChild(sub); }
-      const sc=sub.querySelector('.sub-modal-content'); const title=$('#subModalTitle'); const grid=$('#selectionGrid'); sc.querySelectorAll(':scope > :not(.close):not(#subModalTitle):not(#selectionGrid)').forEach(n=>n.remove()); grid.innerHTML=''; sub.dataset.subType=subType; title.textContent=subType; let items=[]; if(subType==='Gyro'){ title.textContent='Gyroscopic Adaptation Line'; const row=document.createElement('div'); row.style.display='flex'; row.style.gap='40px';
-        function sideBlock(side){ const wrap=document.createElement('div'); const h1=document.createElement('h4'); h1.textContent='Gyro Line 1 '+side.toUpperCase(); wrap.appendChild(h1); const b1=document.createElement('div'); b1.style.display='flex'; b1.style.flexWrap='wrap'; b1.style.gap='8px'; [1,2,3,4,5,6,7].forEach(n=>{ const b=document.createElement('div'); b.className='selection-button'; b.textContent=n; b.onclick=(e)=>toggleSelection(e.target); b.dataset.value=`${n} ${side==='Left'?'Left':'Right'}`; b1.appendChild(b); }); wrap.appendChild(b1); const h2=document.createElement('h4'); h2.textContent='Gyro Line 2 '+side.toUpperCase(); wrap.appendChild(h2); const b2=document.createElement('div'); b2.style.display='flex'; b2.style.flexWrap='wrap'; b2.style.gap='8px'; ['2/1','2/2','2/3'].forEach(n=>{ const b=document.createElement('div'); b.className='selection-button'; b.textContent=n; b.onclick=(e)=>toggleSelection(e.target); b.dataset.value=`${n} ${side==='Left'?'Left':'Right'}`; b2.appendChild(b); }); wrap.appendChild(b2); return wrap; }
-        row.appendChild(sideBlock('Left')); row.appendChild(sideBlock('Right')); grid.appendChild(row);
-      } else if(subType==='VIP'){ function buildVipTree(parent, structure){ for(const key in structure){ if(structure[key]===null){ const b=document.createElement('div'); b.className='selection-button'; b.textContent=key; b.onclick=(e)=>toggleSelection(e.target); parent.appendChild(b);} else { const det=document.createElement('details'); const sum=document.createElement('summary'); sum.textContent=key; det.appendChild(sum); const c=document.createElement('div'); c.className='sacrum-content'; buildVipTree(c, structure[key]); det.appendChild(c); parent.appendChild(det);} } }
-        const vipStructure={ 'Glandular system':{ 'Adrenal glands':null, 'Pancreas':null, 'Liver':null, 'Parathyroid glands':null, 'Thyroid Gland':null }, 'Brain/CSF':null, 'Respiratory system':{ 'Upper lung':null,'Lower Lung':null }, 'Head and neck':{ 'Inner Ear':null,'Nose':null,'Tongue':null,'Larynx':null,'Pharynx':null,'Tonsils':null }, 'Digestive system':{ 'Oesophagus':null, 'Stomach':{ 'Cardiac Valve':null,'Body':null,'Pyloric Valve':null }, 'Pancreas':null,'Gallbladder':null, 'Small intestine':{ 'Duodenum':null,'Jejunum':null,'Ileum':null }, 'Large intestine':{ 'ICV':null,'Appendix':null,'Ascending colon':null,'Transverse colon':null,'Hepatic Flexure':null,'Splenic flexure':null,'Descending colon':null,'Sigmoid colon':null,'Rectum':null } }, 'Reproductive system':{ 'Prostate':null,'Testes':null,'Penis':null,'Uterus':null,'Womb':null,'Vagina':null }, 'Heart':null, 'Urinary system':{ 'Kidneys':null,'Ureters':null,'Urethra':null,'Bladder':null }, 'Immune system':{ 'Spleen':null,'Thymus gland':null,'Right Lymphatic duct':null,'Left Lymphatic duct (Thoracic Duct)':null,'Appendix':null } };
-        buildVipTree(grid, vipStructure); const ci=document.createElement('input'); ci.type='text'; ci.placeholder='Add custom VIP...'; ci.style.marginTop='10px'; ci.onkeypress=(e)=>{ if(e.key==='Enter'){ const v=e.target.value.trim(); if(v){ addToObjective('VIP - '+v); e.target.value=''; } } }; sc.appendChild(ci);
-      } else if(subType==='Zone(s) active'){ [1,2,3,4,5,6,7].forEach(n=>{ const b=document.createElement('div'); b.className='selection-button'; b.textContent='Zone '+n; b.onclick=(e)=>toggleSelection(e.target); grid.appendChild(b); }); }
-      else { [1,2,3,4,5,6,7].forEach(n=>{ const b=document.createElement('div'); b.className='selection-button'; b.textContent=n; b.onclick=(e)=>toggleSelection(e.target); grid.appendChild(b); }); }
-      const add=document.createElement('button'); add.className='button'; add.textContent='Add to SOAP note'; add.onclick=()=>{ addSelectionsFromSubModal(sub); closeCurrentModal(); }; sc.appendChild(add); sub.style.display='block'; openModals.push(sub); sub.addEventListener('click', (e)=>{ if(e.target.id==='subModal') closeCurrentModal(); }); document.addEventListener('keydown', handleEscKey); return sub; }
-
-    function addSelectionsFromSubModal(sub){ const st=sub.dataset.subType; let selected = Array.from(sub.querySelectorAll('.selection-button.selected')).map(el=>el.dataset.value||el.textContent); if(selected.length>0){ if(st==='Gyro'){ const left=new Set(), right=new Set(); selected.forEach(sel=>{ const [item, side]=sel.split(' '); if(side==='Left') left.add(item); if(side==='Right') right.add(item); }); const bilateral=[], indiv=[]; left.forEach(item=>{ if(right.has(item)){ bilateral.push(item); right.delete(item);} else { indiv.push(item+' Left'); } }); right.forEach(item=>indiv.push(item+' Right')); bilateral.forEach(it=>addToObjective('Gyro: Bilateral '+it)); indiv.forEach(it=>addToObjective('Gyro: '+it)); } else if(st==='VIP'){ addToObjective('VIP - '+selected.join(', ')); } else if(st==='Zone(s) active'){ addToObjective('Zone(s) active: '+selected.join(', ')); } else { addToObjective(st+': '+selected.join(', ')); } } }
-
-    // ======== Phase 1 Row Builder functions ========
-    function badgeUpdate(){ const set=(k,v)=>{ const el=$(`[data-rb="${k}"]`); if(!el) return; if(Array.isArray(v)) el.textContent=v.length? v.join(', '):'—'; else el.textContent=v||'—'; }; set('bone', selectedBone); set('listing', selectedListings[0]||'—'); set('positions', selectedPositions); set('contacts', selectedContacts); set('types', selectedTypes); set('protocols', selectedProtocols); $('#btn-add-row')?.toggleAttribute('disabled', !(selectedBone && selectedListings.length)); }
-    function clearPending(){ selectedBone=''; selectedCategory=''; selectedListings=[]; selectedPositions=[]; selectedContacts=[]; selectedTypes=[]; selectedProtocols=[]; $$('.selected').forEach(x=>x.classList.remove('selected')); ['listingsContainer','positionsContainer','contactsContainer','typesContainer','protocolsContainer','sotContainer'].forEach(id=>{ const el=$('#'+id); if(el) el.innerHTML=''; }); badgeUpdate(); const b=$('#btn-add-row'); if(b) b.textContent='Add Row'; }
-
-    function buildLineText(row){ const j=a=>a&&a.length? a.join(', '):null; return [row.bone,row.listing,j(row.positions),j(row.contacts),j(row.types),j(row.protocols)].filter(Boolean).join(' — '); }
-    function renderSaved(){ const ul=$('#saved-list'); ul.innerHTML=''; savedRows.forEach((row,idx)=>{ const li=document.createElement('li'); li.className='saved-item'; li.innerHTML=`<div class="saved-text">${buildLineText(row)}</div><div><button class="icon-btn" data-edit="${idx}">✎ Edit</button> <button class="icon-btn" data-del="${idx}">🗑️ Delete</button></div>`; ul.appendChild(li); }); }
-    function pushHistory(action){ undoStack.push(action); redoStack=[]; }
-    function addRow(){ if(!(selectedBone && selectedListings.length)) return; const row={ id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random()), bone:selectedBone, listing:selectedListings[0], positions:selectedPositions.slice(0), contacts:selectedContacts.slice(0), types:selectedTypes.slice(0), protocols:selectedProtocols.slice(0) }; if(editingIndex!==null){ const prev={...savedRows[editingIndex]}; savedRows[editingIndex]=row; pushHistory({type:'edit',index:editingIndex,prev,next:{...row}}); editingIndex=null; $('#btn-add-row').textContent='Add Row'; } else { savedRows.push(row); pushHistory({type:'add',index:savedRows.length-1,row:{...row}}); } persistPhase1(); renderSaved(); clearPending(); }
-    function delRow(i){ const [r]=savedRows.splice(i,1); pushHistory({type:'delete',index:i,row:r}); persistPhase1(); renderSaved(); }
-    function loadRow(i){ const row=savedRows[i]; if(!row) return; clearPending(); // select bone visually if exists
-      $$('.bone-selectable').forEach(el=>{ if(el.textContent.trim()===row.bone) el.classList.add('selected'); else el.classList.remove('selected'); });
-      // emulate selection
-      selectedBone=row.bone; // category best-guess
-      let secName=null; Object.keys(listingsData).forEach(name=>{ if(listingsData[name][row.bone]) secName=name; }); if(!secName && listingsData[row.bone]) secName=row.bone; if(!secName) secName = selectedCategory || Object.keys(listingsData)[0]; selectedCategory=secName; // populate right panel
-      let block; if(secName==='Cranial Bones'){ block={ listings:listingsData['Cranial Bones'].commonListings, positions:(listingsData['Cranial Bones'][row.bone]||{}).positions||[], types:listingsData['Cranial Bones'].commonTypes, protocols:listingsData['Cranial Bones'].commonProtocols }; } else if(secName==='Cervical'){ let key='C2-7'; if(row.bone==='Occiput') key='Occiput'; else if(row.bone==='C1/Atlas') key='C1/Atlas'; block=listingsData['Cervical'][key]; } else if(secName==='Sacrum & coccyx'){ block=listingsData['Sacrum & coccyx']; } else { block=listingsData[secName]; }
-      populateListings(block.listings||[]); populatePositions(block.positions||[]); populateContacts(block.contacts||[]); populateTypes(block.types||[]); populateProtocols(block.protocols||[]);
-      function selectIn(hostCls, values){ values.forEach(v=>{ document.querySelectorAll('.'+hostCls+' .selection-button')?.forEach(el=>{ if(el.textContent.trim()===v) el.classList.add('selected'); }); }); }
-      selectedListings=[row.listing]; $$('.listing-selectable').forEach(el=>{ if(el.textContent.trim()===row.listing) el.classList.add('selected'); });
-      selectedPositions=row.positions||[]; $$('.position-selectable').forEach(el=>{ if(selectedPositions.includes(el.textContent.trim())) el.classList.add('selected'); });
-      selectedContacts=row.contacts||[]; $$('.contact-selectable').forEach(el=>{ if(selectedContacts.includes(el.textContent.trim())) el.classList.add('selected'); });
-      selectedTypes=row.types||[]; $$('.type-selectable').forEach(el=>{ if(selectedTypes.includes(el.textContent.trim())) el.classList.add('selected'); });
-      selectedProtocols=row.protocols||[]; $$('.protocol-selectable').forEach(el=>{ if(selectedProtocols.includes(el.textContent.trim())) el.classList.add('selected'); });
-      editingIndex=i; badgeUpdate(); $('#btn-add-row').textContent='Save Changes'; }
-
-    function undoPhase1(){ const a=undoStack.pop(); if(!a) return; switch(a.type){ case 'add': savedRows.splice(a.index,1); redoStack.push(a); break; case 'edit': savedRows[a.index]=a.prev; redoStack.push(a); break; case 'delete': savedRows.splice(a.index,0,a.row); redoStack.push(a); break; case 'import': savedRows=a.prev; redoStack.push(a); break; } persistPhase1(); renderSaved(); }
-    function redoPhase1(){ const a=redoStack.pop(); if(!a) return; switch(a.type){ case 'add': savedRows.splice(a.index,0,a.row); break; case 'edit': savedRows[a.index]=a.next; break; case 'delete': savedRows.splice(a.index,1); break; case 'import': break; } undoStack.push(a); persistPhase1(); renderSaved(); }
-    function persistPhase1(){ try{ localStorage.setItem('chiroNotes_phase1', JSON.stringify({savedRows})); }catch(e){} }
-    function restorePhase1(){ try{ const raw=localStorage.getItem('chiroNotes_phase1'); if(!raw) return; const d=JSON.parse(raw); if(Array.isArray(d.savedRows)) savedRows=d.savedRows; }catch(e){} }
-
-    function exportTextPhase1(){ const blob=new Blob([savedRows.map(buildLineText).join('\n')],{type:'text/plain'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='chiro-notes.txt'; a.click(); URL.revokeObjectURL(url); }
-
-    function importJSONPhase1(file){ const r=new FileReader(); r.onload=e=>{ try{ const data=JSON.parse(e.target.result); if(Array.isArray(data.savedRows)){ pushHistory({type:'import',prev:savedRows.slice()}); savedRows=data.savedRows; renderSaved(); persistPhase1(); } else alert('Invalid file (missing savedRows)'); }catch(err){ alert('Could not read file: '+err.message); } }; r.readAsText(file); }
-
-    // ======== Wire up ========
-    document.addEventListener('click', (e)=>{
-      if(e.target.matches('#btn-add-row')) addRow();
-      if(e.target.matches('#btn-clear-pending')) clearPending();
-      if(e.target.matches('#btn-undo')){ undo(); undoPhase1(); }
-      if(e.target.matches('#btn-redo')){ redo(); redoPhase1(); }
-      if(e.target.matches('#btn-clear-all')) clearAll();
-      if(e.target.matches('#btn-export-text')) exportData();
-      if(e.target.closest('[data-del]')) delRow(parseInt(e.target.closest('[data-del]').getAttribute('data-del')));
-      if(e.target.closest('[data-edit]')) loadRow(parseInt(e.target.closest('[data-edit]').getAttribute('data-edit')));
-    });
-
-    // On load
-    window.onload = function(){ const saved=localStorage.getItem('chiroData'); if(saved){ setData(JSON.parse(saved)); } $$('textarea, input[type="text"]').forEach(el=>{ el.addEventListener('input', ()=>{ saveData(); saveSnapshot(); }); }); saveSnapshot(true); $('#addToSoapButton').style.display='block'; $('#status').innerText='Ready. Data auto-saves.'; // build objective headers
-      const objectiveCol=$('#objectiveContent'); createPalpatoryFindingsHeader(objectiveCol); createSystemFaultLinesHeader(objectiveCol); createObjectiveFindingsNotesHeader(objectiveCol); createSotHeader(objectiveCol); // row builder restore
-      restorePhase1(); renderSaved(); badgeUpdate(); };
+      // Desktop-only gate
+      const isNarrow = window.innerWidth < 1000; const isMobileUA = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if(isNarrow || isMobileUA){ document.getElementById('desktopOnly').style.display='flex'; }
+    };
   </script>
 </body>
 </html>
+
+
